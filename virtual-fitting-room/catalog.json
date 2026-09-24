@@ -1,0 +1,58 @@
+{
+  "store": "أناقة",
+  "models": [
+    {
+      "id": "m1",
+      "name": "سالم",
+      "desc": "شاب، بنية رياضية، شعر مجعد",
+      "gender": "m",
+      "img": null,
+      "demoImg": "samples/model-m1.webp",
+      "prompt": "a young man in his mid twenties with dark curly medium-length hair, clean-shaven, light olive skin, athletic slim build, about 180 cm tall"
+    },
+    {
+      "id": "m2",
+      "name": "فهد",
+      "desc": "شاب خليجي، لحية خفيفة، بنية متوسطة",
+      "gender": "m",
+      "img": null,
+      "prompt": "a Gulf Arab man in his late twenties with short black hair, neatly trimmed short beard and moustache, warm light-brown skin, average build, about 175 cm tall"
+    },
+    {
+      "id": "m3",
+      "name": "عبدالله",
+      "desc": "رجل ثلاثيني، بنية ممتلئة",
+      "gender": "m",
+      "img": null,
+      "prompt": "an Arab man in his early thirties with short black hair and a full dark beard, medium-brown skin, broad heavier build with a round belly, about 178 cm tall"
+    },
+    {
+      "id": "f1",
+      "name": "نورة",
+      "desc": "شابة محجبة، بنية متوسطة",
+      "gender": "f",
+      "img": null,
+      "prompt": "a young Arab woman in her mid twenties wearing a plain beige hijab that fully covers her hair and neck, light-brown skin, average slim build, about 165 cm tall, modest look"
+    }
+  ],
+  "products": [
+    {"id": "r4", "cat": "top", "name": "تيشيرت أوفرسايز مطبوع", "price": 149, "color": "أسود", "img": "products/p4.webp",
+     "ai": "black oversized heavyweight cotton t-shirt with a large grey pixelated brush-stroke graphic print across the chest, small orange neck label, dropped shoulders, boxy fit"},
+    {"id": "r9", "cat": "top", "name": "تيشيرت أوفرسايز سادة", "price": 119, "color": "نعناعي", "img": "products/p9.webp",
+     "ai": "mint green oversized heavyweight cotton t-shirt with a small teal embroidered script logo on the left chest, crew neck, dropped shoulders, boxy fit, sleeves reaching the elbows"},
+    {"id": "r5", "cat": "top", "name": "هودي مطبوع «Soulmates»", "price": 229, "color": "أسود", "img": "products/p5.webp",
+     "ai": "black oversized pullover hoodie with a large blurry multicolour (mustard yellow, purple, teal) artwork of two figures on the front and small white text 'SOULMATES.' and 'STRANGERS.', ribbed cuffs and hem"},
+    {"id": "r6", "cat": "top", "name": "قميص كاروهات نص كم", "price": 179, "color": "كحلي", "img": "products/p6.webp",
+     "ai": "navy blue boxy short-sleeve button-up shirt with a thin white grid check pattern, one chest pocket with white script embroidery, worn open over a plain white crew-neck t-shirt"},
+    {"id": "r7", "cat": "top", "name": "تيشيرت كورة مخطط", "price": 199, "color": "عنابي وأزرق", "img": "products/p7.webp",
+     "ai": "football jersey with vertical deep burgundy and royal blue stripes, yellow-orange crest and chest logos, dark navy V-neck collar and sleeve cuffs, athletic fit"},
+    {"id": "r3", "cat": "bottom", "name": "بنطلون نايلون رياضي", "price": 169, "color": "أسود ورمادي", "img": "products/p3.webp",
+     "ai": "black lightweight crinkled nylon track pants with grey side panels and thin white piping, elastic drawstring waist, toggle cuffs at the ankles, loose relaxed fit"},
+    {"id": "r8", "cat": "bottom", "name": "جينز واسع مغسول", "price": 209, "color": "رمادي", "img": "products/p8.webp",
+     "ai": "grey acid-washed wide-leg baggy jeans with faded fronts, full length so the hems stack over the shoes"},
+    {"id": "r1", "cat": "acc", "name": "كاب شبك مطبوع", "price": 89, "color": "بيج", "img": "products/p1.webp",
+     "ai": "trucker cap with beige mesh back panels, a front panel printed with a colourful tropical boat graphic, and a flat beige brim"},
+    {"id": "r2", "cat": "acc", "name": "كاب فنتج مغسول", "price": 79, "color": "كحلي وعنابي", "img": "products/p2.webp",
+     "ai": "distressed vintage baseball cap with navy and stone panels, a faded burgundy frayed curved brim and a 'MOTORS RACING TEAM' patch on the front"}
+  ]
+}

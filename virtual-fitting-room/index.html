@@ -4,10 +4,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Readex+Pro:wght@300;400;500;600&display=swap">
 <style>
 :root{
-  --bg:#EDF0EF; --surface:#FFFFFF; --surface-2:#F5F7F6; --ink:#15191A; --muted:#5C6567;
+  --bg:#EDF0EF; --surface:#FFFFFF; --surface-2:#F4F6F5; --ink:#15191A; --muted:#5C6567;
   --line:#D8DEDC; --accent:#0E7C66; --accent-ink:#FFFFFF; --accent-soft:#DCF0EA;
-  --tag:#C4325E; --mirror-a:#E6ECEA; --mirror-b:#C9D3D0; --frame:#B89B6A; --shadow:rgba(20,30,28,.16);
-  --focus:#0E7C66;
+  --tag:#C4325E; --shadow:rgba(20,30,28,.14); --shimmer:rgba(255,255,255,.55); --focus:#0E7C66;
   --display:"Reem Kufi","Readex Pro",Tahoma,sans-serif;
   --body:"Readex Pro",Tahoma,"Segoe UI",sans-serif;
 }
@@ -16,27 +15,25 @@
     color-scheme:dark;
     --bg:#101415; --surface:#181D1E; --surface-2:#1F2526; --ink:#E9EEED; --muted:#98A3A4;
     --line:#2C3435; --accent:#38C6A3; --accent-ink:#052119; --accent-soft:#153530;
-    --tag:#F06A92; --mirror-a:#232A2B; --mirror-b:#171C1D; --frame:#8D7650; --shadow:rgba(0,0,0,.45);
-    --focus:#38C6A3;
+    --tag:#F06A92; --shadow:rgba(0,0,0,.45); --shimmer:rgba(255,255,255,.07); --focus:#38C6A3;
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#101415; --surface:#181D1E; --surface-2:#1F2526; --ink:#E9EEED; --muted:#98A3A4;
   --line:#2C3435; --accent:#38C6A3; --accent-ink:#052119; --accent-soft:#153530;
-  --tag:#F06A92; --mirror-a:#232A2B; --mirror-b:#171C1D; --frame:#8D7650; --shadow:rgba(0,0,0,.45);
-  --focus:#38C6A3;
+  --tag:#F06A92; --shadow:rgba(0,0,0,.45); --shimmer:rgba(255,255,255,.07); --focus:#38C6A3;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;margin:0}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:18px 48px}
-button,input,select{font:inherit;color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
+.muted{color:var(--muted)}
 
-/* header */
 .top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding-block:6px 18px}
 .brand{display:flex;align-items:center;gap:12px}
 .brand-mark{width:40px;height:40px;border-radius:12px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
@@ -45,13 +42,14 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
 .tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;flex-wrap:wrap}
 .tab{border:0;background:none;padding:7px 14px;border-radius:999px;font-size:.9rem;color:var(--muted)}
 .tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.mode-pill{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;border-radius:999px;padding:2px 10px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.mode-pill i{width:8px;height:8px;border-radius:50%;background:#C9A227}
+.mode-pill.live i{background:var(--accent)}
 
-/* studio layout */
-.studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,410px);gap:20px;align-items:start}
+.studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:20px;align-items:start}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}
-.mirror-col{position:sticky;top:calc(env(safe-area-inset-top,0px) + 14px);display:grid;gap:12px}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 14px);display:grid;gap:12px}
 
-/* stepper */
 .steps{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 .steps button{width:100%;border:0;background:none;padding:0;text-align:start;display:grid;gap:6px;color:var(--muted);font-size:.8rem}
 .steps .bar{height:4px;border-radius:4px;background:var(--line)}
@@ -61,8 +59,8 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
 .steps button:disabled{cursor:not-allowed;opacity:.6}
 .step-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
 .step-head h2{font-size:1.45rem}
-.step-count{color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums;white-space:nowrap}
-.step-sub{color:var(--muted);margin:0 0 16px;max-width:60ch}
+.step-count{color:var(--muted);font-size:.85rem;white-space:nowrap}
+.step-sub{color:var(--muted);margin:0 0 16px;max-width:62ch}
 .step-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap}
 .hint{color:var(--tag);font-size:.85rem}
 
@@ -70,13 +68,13 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.primary:hover{filter:brightness(1.06)}
+.btn.big{padding:14px 26px;font-size:1.05rem;border-radius:14px}
 .btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
 .btn.ghost{border-color:transparent;background:none;color:var(--muted)}
 
-/* mode choice */
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.choice{border:1.5px solid var(--line);background:var(--surface-2);border-radius:16px;padding:16px;text-align:start;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center}
-.choice svg{grid-row:span 2;width:44px;height:44px;color:var(--accent)}
+.choice{border:1.5px solid var(--line);background:var(--surface-2);border-radius:16px;padding:16px;text-align:start;display:grid;grid-template-columns:auto 1fr;gap:2px 14px;align-items:center}
+.choice svg{grid-row:span 2;width:40px;height:40px;color:var(--accent)}
 .choice b{font-size:1.05rem}
 .choice span{color:var(--muted);font-size:.85rem}
 .choice[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
@@ -84,122 +82,125 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
 .fields{display:grid;gap:16px;margin-top:18px}
 .field{display:grid;gap:8px}
 .field > label,.field > .lbl{font-weight:500;font-size:.9rem;display:flex;justify-content:space-between;gap:8px}
-.field .val{color:var(--muted);font-variant-numeric:tabular-nums;font-weight:400}
+.field .val{color:var(--muted);font-weight:400}
 .row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px;flex-wrap:wrap}
-.seg button{border:0;background:none;border-radius:9px;padding:7px 14px;font-size:.9rem;color:var(--muted)}
-.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px var(--shadow)}
-.skins{display:flex;gap:10px;flex-wrap:wrap}
-.skin{width:34px;height:34px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--line)}
-.skin[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--accent)}
 input[type=range]{width:100%;accent-color:var(--accent)}
-select,input[type=text],input[type=number]{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
-.upload{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);border-radius:16px;padding:16px;background:var(--surface-2);cursor:pointer}
+select,input[type=text],input[type=number],input[type=password],textarea{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+textarea{resize:vertical;min-height:70px;direction:ltr;text-align:left;font-size:.85rem}
+
+.models{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.model{border:1.5px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;padding:0;text-align:start;display:flex;flex-direction:column;position:relative}
+.model .ph{aspect-ratio:3/4;background:var(--surface-2);display:grid;place-items:center;max-width:100%;overflow:hidden}
+.model .ph img{width:100%;height:100%;object-fit:cover;object-position:top}
+.model .ph .pending{font-size:.78rem;color:var(--muted);padding:14px;text-align:center;line-height:1.5}
+.model .meta{padding:8px 12px 12px;display:grid}
+.model .meta b{font-size:.95rem}
+.model .meta span{font-size:.78rem;color:var(--muted)}
+.model[aria-pressed="true"],.card.on{border-color:var(--accent)}
+.model[aria-pressed="true"]::after,.card.on::after{content:"";position:absolute;top:10px;inset-inline-start:10px;width:22px;height:22px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/14px no-repeat}
+.model:disabled{cursor:not-allowed}
+
+.upload{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);border-radius:16px;padding:16px;background:var(--surface-2);cursor:pointer;position:relative}
 .upload:hover{border-color:var(--accent)}
 .upload input{position:absolute;opacity:0;width:1px;height:1px}
 .upload:focus-within{outline:2px solid var(--focus);outline-offset:2px}
-.upload .thumb{width:56px;height:56px;border-radius:12px;background:var(--surface);display:grid;place-items:center;overflow:hidden;flex:none;color:var(--muted)}
+.upload .thumb{width:60px;height:80px;border-radius:12px;background:var(--surface);display:grid;place-items:center;overflow:hidden;flex:none;color:var(--muted)}
 .upload .thumb img{width:100%;height:100%;object-fit:cover}
 .upload b{display:block}
 .upload span{color:var(--muted);font-size:.85rem}
-.note{font-size:.82rem;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+.tips{margin:0;padding-inline-start:18px;color:var(--muted);font-size:.85rem;display:grid;gap:2px}
+.note{font-size:.82rem;color:var(--muted);display:flex;gap:8px;align-items:flex-start;margin:0}
 .note svg{flex:none;margin-top:3px}
 
-/* product grid */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.card{border:1.5px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column;position:relative}
-.card.on{border-color:var(--accent)}
-.card.on::after{content:"";position:absolute;top:10px;inset-inline-start:10px;width:22px;height:22px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/14px no-repeat}
-.card-main{border:0;background:none;padding:0;text-align:start;display:flex;flex-direction:column;flex:1}
-.card .pic{background:var(--surface-2);aspect-ratio:1/1;display:grid;place-items:center;padding:12px;max-width:100%}
-.card .pic{position:relative;overflow:hidden}
-.card .pic svg{width:100%;height:100%}
+.card{border:1.5px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column;position:relative;padding:0;text-align:start}
+.card .pic{background:var(--surface-2);aspect-ratio:1/1;position:relative;overflow:hidden;max-width:100%}
 .card .pic img{position:absolute;top:12px;left:12px;width:calc(100% - 24px);height:calc(100% - 24px);object-fit:contain}
-.card .meta{padding:10px 12px 4px;display:grid;gap:2px}
+.card .meta{padding:10px 12px 12px;display:grid;gap:2px}
 .card .name{font-weight:500;font-size:.92rem;line-height:1.35}
-.card .sku{font-size:.72rem;color:var(--muted);letter-spacing:.04em;direction:ltr;text-align:end}
-.price{color:var(--tag);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.card .color{font-size:.78rem;color:var(--muted)}
+.price{color:var(--tag);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .price small{font-weight:400;font-size:.75em}
-.swatches{display:flex;gap:6px;padding:6px 12px 12px;flex-wrap:wrap}
-.sw{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--surface);box-shadow:0 0 0 1px var(--line);padding:0}
-.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
-.none-card{border-style:dashed;justify-content:center;align-items:center;color:var(--muted);min-height:140px}
-.none-card.on{color:var(--ink)}
+.new-badge{font-size:.7rem;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:1px 8px;margin-inline-start:6px}
+.empty{border:1.5px dashed var(--line);border-radius:16px;padding:22px;text-align:center;color:var(--muted)}
 
-/* mirror */
-.mirror{background:linear-gradient(180deg,var(--mirror-a),var(--mirror-b));border:6px solid var(--frame);border-radius:200px 200px 22px 22px;padding:18px 12px 8px;display:grid;place-items:center;position:relative;overflow:hidden}
-.mirror::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 42%,transparent 55%);pointer-events:none}
-.mirror svg.fig{height:min(64vh,560px);width:auto;max-width:100%;display:block}
-.floor{fill:var(--shadow)}
-.mirror-label{position:absolute;top:auto;bottom:10px;inset-inline-end:14px;font-size:.72rem;letter-spacing:.06em;color:var(--muted);background:var(--surface);border-radius:999px;padding:2px 10px;opacity:.9}
-.wearing{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;gap:8px}
-.wearing-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.wearing-head b{font-family:var(--display);font-size:1rem}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 8px}
-.chip i{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 0 1px var(--line)}
-.muted{color:var(--muted)}
+.who{border-radius:16px;overflow:hidden;background:var(--surface-2);aspect-ratio:3/4;max-width:100%;display:grid;place-items:center;position:relative}
+.who img{width:100%;height:100%;object-fit:cover;object-position:top}
+.who .lbl{position:absolute;bottom:10px;inset-inline-start:10px;background:var(--surface);border-radius:999px;padding:2px 10px;font-size:.75rem}
+.who .none{color:var(--muted);font-size:.85rem;padding:20px;text-align:center}
+.pieces{display:grid;gap:8px}
+.piece{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center}
+.piece .pic{width:44px;height:44px;border-radius:10px;background:var(--surface-2);padding:4px}
+.piece .pic img{width:100%;height:100%;object-fit:contain}
+.piece b{font-weight:500;font-size:.88rem;display:block;line-height:1.3}
+.piece small{color:var(--muted);font-size:.75rem}
+.side-head{display:flex;justify-content:space-between;align-items:baseline}
+.side-head b{font-family:var(--display)}
 
-/* result */
-.look{display:grid;gap:10px}
-.line-item{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding-block:8px;border-bottom:1px solid var(--line)}
-.line-item .pic{width:52px;height:52px;border-radius:12px;background:var(--surface-2);padding:6px}
-.line-item .pic svg,.line-item .pic img{width:100%;height:100%;object-fit:contain}
+.gen{display:grid;gap:16px}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.shot{border-radius:16px;overflow:hidden;background:var(--surface-2);aspect-ratio:2/3;max-width:100%;position:relative}
+.shot img{width:100%;height:100%;object-fit:contain}
+.shot .tag{position:absolute;top:10px;inset-inline-end:10px;background:var(--surface);border-radius:999px;padding:2px 10px;font-size:.75rem}
+.shot.loading::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,var(--shimmer) 50%,transparent 70%);background-size:200% 100%;animation:sh 1.4s linear infinite}
+@keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
+.status{display:flex;align-items:center;gap:10px;font-weight:500}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.callout{background:var(--accent-soft);border-radius:14px;padding:12px 14px;display:grid;gap:6px}
+.callout.warn{background:var(--surface-2);border:1px solid var(--line)}
+.callout b{font-family:var(--display)}
+.line-item{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding-block:8px;border-bottom:1px solid var(--line)}
+.line-item .pic{width:48px;height:48px;border-radius:12px;background:var(--surface-2);padding:5px}
+.line-item .pic img{width:100%;height:100%;object-fit:contain}
 .line-item small{color:var(--muted);display:block}
-.totals{display:grid;gap:4px;margin-top:6px}
+.totals{display:grid;gap:4px}
 .totals div{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
 .totals .save{color:var(--accent)}
-.totals .grand{font-size:1.2rem;font-weight:600;padding-top:6px;border-top:1px solid var(--line)}
-.fitbox{background:var(--accent-soft);border-radius:14px;padding:12px 14px;display:grid;gap:6px}
-.fitbox b{font-family:var(--display)}
+.totals .grand{font-size:1.15rem;font-weight:600;padding-top:6px;border-top:1px solid var(--line)}
 .sizes{display:flex;gap:8px;flex-wrap:wrap}
 .size{background:var(--surface);border-radius:10px;padding:4px 12px;font-size:.85rem}
-.size b{font-family:var(--body);font-variant-numeric:tabular-nums}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
-.saved{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin-top:6px}
-.saved button{border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:6px;display:grid;gap:2px;font-size:.75rem;color:var(--muted)}
-.saved svg{width:100%;height:120px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface-2)}
+details summary{cursor:pointer;font-weight:500;font-size:.9rem}
+details pre{white-space:pre-wrap;direction:ltr;text-align:left;font-size:.78rem;line-height:1.5;margin:10px 0 0;color:var(--muted);max-height:260px;overflow:auto}
 
-/* owner */
 .owner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
 .owner form{display:grid;gap:14px}
-.preview-thumb{background:var(--surface-2);border-radius:16px;aspect-ratio:1/1;max-width:220px;padding:18px;margin-inline:auto;width:100%}
-.preview-thumb svg,.preview-thumb img{width:100%;height:100%;object-fit:contain}
-.catalog h3{font-size:1.05rem;margin-bottom:10px}
 .cat-group{margin-bottom:16px}
 .cat-group h4{margin:0 0 8px;font-size:.85rem;color:var(--muted);font-weight:500;display:flex;justify-content:space-between}
 .cat-list{display:grid;gap:6px}
-.cat-row{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:6px 10px 6px 6px}
-.cat-row .pic{width:40px;height:40px;background:var(--surface);border-radius:9px;padding:4px}
-.cat-row .pic svg,.cat-row .pic img{width:100%;height:100%;object-fit:contain}
-.new-badge{font-size:.7rem;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:1px 8px;margin-inline-start:6px}
-
-/* benefits */
-.benefits{display:grid;gap:24px}
-.benefits .lead{font-size:1.05rem;max-width:62ch;margin:6px 0 0;color:var(--muted)}
+.cat-row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:6px 10px 6px 6px}
+.cat-row .pic{width:44px;height:44px;background:var(--surface);border-radius:9px;padding:4px}
+.cat-row .pic img{width:100%;height:100%;object-fit:contain}
+.info{display:grid;gap:26px}
+.info .lead{font-size:1.02rem;max-width:64ch;margin:6px 0 0;color:var(--muted)}
+.flow{list-style:none;padding:0;margin:0;display:grid;gap:14px;counter-reset:f}
+.flow li{counter-increment:f;display:grid;grid-template-columns:34px 1fr;gap:12px}
+.flow li::before{content:counter(f);width:34px;height:34px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-weight:600}
+.flow b{display:block}
+.flow span{color:var(--muted)}
 .bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 28px}
 .b{padding-block:14px;border-top:1px solid var(--line);display:grid;gap:4px}
-.b h3{font-size:1.05rem;display:flex;gap:10px;align-items:center}
-.b h3 svg{color:var(--accent);flex:none}
+.b h3{font-size:1.02rem}
 .b p{margin:0;color:var(--muted)}
-.road{counter-reset:r;list-style:none;padding:0;margin:0;display:grid;gap:12px}
-.road li{counter-increment:r;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
-.road li::before{content:counter(r);width:34px;height:34px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-weight:600;font-variant-numeric:tabular-nums}
-.road b{display:block}
-.road span{color:var(--muted)}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.compare figure{margin:0;display:grid;gap:6px}
+.compare figcaption{font-size:.85rem;color:var(--muted)}
+.compare .imgs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.compare img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:12px;background:var(--surface-2)}
 
 .toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-size:.9rem;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:10;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media (max-width:860px){
   .studio{grid-template-columns:1fr}
-  .mirror-col{position:static;order:-1}
-  .mirror svg.fig{height:46vh}
+  .side{position:static}
+  .who{aspect-ratio:auto;height:240px}
   .owner{grid-template-columns:1fr}
   .steps{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:10px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-.fig-anim g.layer{transition:opacity .25s}
 </style>
 
 <div class="wrap" dir="rtl" lang="ar">
@@ -210,18 +211,17 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
       </div>
       <div>
         <h1>غرفة القياس الافتراضية</h1>
-        <p>نسخة تجريبية لمتجر «أناقة» للملابس بصور منتجات حقيقية</p>
+        <p>متجر «أناقة» · <span class="mode-pill" id="modePill"><i></i><span>وضع العرض</span></span></p>
       </div>
     </div>
     <nav class="tabs" role="tablist" aria-label="أقسام الصفحة">
-      <button class="tab" role="tab" id="tab-try" aria-selected="true" data-tab="try">تجربة العميل</button>
-      <button class="tab" role="tab" id="tab-owner" aria-selected="false" data-tab="owner">لوحة صاحب المتجر</button>
-      <button class="tab" role="tab" id="tab-why" aria-selected="false" data-tab="why">وش يستفيد التاجر؟</button>
+      <button class="tab" role="tab" aria-selected="true" data-tab="try">تجربة العميل</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="owner">لوحة التاجر</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="how">كيف يشتغل؟</button>
     </nav>
   </header>
 
-  <!-- CUSTOMER -->
-  <section id="view-try" class="studio" role="tabpanel" aria-labelledby="tab-try">
+  <section id="view-try" class="studio" role="tabpanel">
     <div class="panel">
       <ol class="steps" id="steps"></ol>
       <div id="stepBody"></div>
@@ -234,541 +234,318 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
         </div>
       </div>
     </div>
-    <aside class="mirror-col" aria-label="المرآة">
-      <div class="mirror">
-        <svg class="fig" id="fig" viewBox="22 -8 256 594" role="img" aria-label="معاينة الإطلالة"></svg>
-        <span class="mirror-label" id="mirrorLabel">شخص افتراضي</span>
-      </div>
-      <div class="wearing">
-        <div class="wearing-head"><b>على المرآة الحين</b><span class="price" id="runTotal"></span></div>
-        <div class="chips" id="chips"></div>
+    <aside class="side" aria-label="ملخص التنسيق">
+      <div class="panel" style="padding:14px;display:grid;gap:12px">
+        <div class="who" id="who"></div>
+        <div class="side-head"><b>تنسيقك</b><span class="price" id="runTotal"></span></div>
+        <div class="pieces" id="pieces"></div>
       </div>
     </aside>
   </section>
 
-  <!-- OWNER -->
-  <section id="view-owner" class="owner" role="tabpanel" aria-labelledby="tab-owner" hidden>
+  <section id="view-owner" class="owner" role="tabpanel" hidden>
     <div class="panel">
-      <h2 style="font-size:1.35rem">أضف منتج من متجرك</h2>
-      <p class="step-sub" style="margin-top:6px">المنتج اللي تضيفه يظهر مباشرة للعميل في خطوات التجربة. في النسخة الحقيقية يرتبط الكتالوج تلقائياً بمتجرك في سلة أو زد.</p>
+      <h2 style="font-size:1.35rem">أضف منتج</h2>
+      <p class="step-sub" style="margin-top:6px">ارفع صورة القطعة واكتب بياناتها، وتظهر للعميل في خطوات التجربة على طول.</p>
       <form id="ownerForm" novalidate>
-        <div class="preview-thumb" id="ownerPreview"></div>
+        <label class="upload" for="oImg"><span class="thumb" id="oThumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg></span>
+          <span><b>صورة المنتج</b><span>أفضل شي صورة القطعة لحالها من الأمام. تنفع بعد صورة على موديل.</span></span>
+          <input type="file" id="oImg" accept="image/png,image/jpeg,image/webp"></label>
         <div class="row2">
           <div class="field"><label for="oCat">نوع القطعة</label>
-            <select id="oCat">
-              <option value="top">قطعة علوية</option>
-              <option value="bottom">بنطلون</option>
-              <option value="shoes">جزمة</option>
-              <option value="acc">إكسسوار</option>
-            </select>
-          </div>
-          <div class="field"><label for="oStyle">الموديل</label><select id="oStyle"></select></div>
+            <select id="oCat"><option value="top">قطعة علوية</option><option value="bottom">بنطلون</option><option value="shoes">جزمة</option><option value="acc">إكسسوار</option></select></div>
+          <div class="field"><label for="oPrice">السعر (ر.س)</label><input type="number" id="oPrice" min="1" step="1" value="149"></div>
         </div>
-        <label class="upload" for="oImg"><span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg></span>
-          <span><b id="oImgLbl">صورة المنتج (اختياري)</b><span>صورة القطعة على خلفية سادة، والخلفية تنشال تلقائياً. بدون صورة يطلع رسم بالموديل واللون.</span></span>
-          <input type="file" id="oImg" accept="image/*"></label>
-        <div class="field"><label for="oName">اسم المنتج</label><input type="text" id="oName" placeholder="مثال: تيشيرت لينن صيفي" maxlength="40"></div>
         <div class="row2">
-          <div class="field"><label for="oPrice">السعر (ر.س)</label><input type="number" id="oPrice" min="1" step="1" value="129"></div>
-          <div class="field"><label for="oColor">اللون</label>
-            <div style="display:flex;gap:8px"><input type="color" id="oColor" value="#6B8F71" style="width:52px;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:3px"><input type="text" id="oColorName" value="زيتي فاتح" maxlength="16" aria-label="اسم اللون"></div>
-          </div>
+          <div class="field"><label for="oName">اسم المنتج</label><input type="text" id="oName" placeholder="مثال: سنيكرز جلد أبيض" maxlength="60"></div>
+          <div class="field"><label for="oColor">اللون</label><input type="text" id="oColor" placeholder="أبيض" maxlength="30"></div>
         </div>
+        <div class="field"><label for="oAi">وصف القطعة للذكاء الاصطناعي <span class="val">اختياري، بالإنجليزي</span></label>
+          <textarea id="oAi" placeholder="white leather low-top sneakers with a thick white sole"></textarea></div>
+        <div class="field" id="oPassWrap" hidden><label for="oPass">كلمة مرور التاجر</label><input type="password" id="oPass" autocomplete="current-password"></div>
         <span class="hint" id="ownerHint"></span>
         <button class="btn primary" type="submit">أضف للكتالوج</button>
       </form>
     </div>
-    <div class="panel catalog">
-      <h3>كتالوج المتجر</h3>
-      <div id="catalog"></div>
+    <div class="panel">
+      <h3 style="font-size:1.05rem;margin-bottom:10px">كتالوج المتجر</h3>
+      <div id="catalogList"></div>
     </div>
   </section>
 
-  <!-- BENEFITS -->
-  <section id="view-why" class="panel benefits" role="tabpanel" aria-labelledby="tab-why" hidden>
+  <section id="view-how" class="panel info" role="tabpanel" hidden>
     <div>
-      <h2 style="font-size:1.6rem">ليش صاحب متجر الملابس يحتاج غرفة قياس افتراضية؟</h2>
-      <p class="lead">أكبر سبب يخلي العميل يتردد في شراء الملابس أونلاين إنه ما يعرف كيف بتطلع عليه القطعة، ولا كيف بتنسق مع باقي لبسه. هالأداة تحل الشيئين في صفحة المنتج نفسها.</p>
+      <h2 style="font-size:1.55rem">نفس تقنية شات جي بي تي، داخل متجرك</h2>
+      <p class="lead">الصور تتولد بنموذج توليد وتعديل الصور حق OpenAI، وهو نفس اللي يشتغل داخل ChatGPT. الفرق إن الموقع يرتّب الطلب تلقائياً: العميل يختار بس، والنظام يكتب الوصف ويرسل الصور ويرجع النتيجة.</p>
     </div>
-    <div class="bgrid">
-      <div class="b"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>مرتجعات أقل</h3><p>العميل يشوف القطعة عليه ويطلع له مقاس مقترح من طوله ووزنه، فتقل طلبات الاستبدال والإرجاع بسبب المقاس أو الشكل.</p></div>
-      <div class="b"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>سلة أكبر</h3><p>بدل ما يشتري تيشيرت واحد، يطلع من التجربة بإطلالة كاملة: تيشيرت وبنطلون وجزمة وإكسسوار. وتقدر تحفّزه بخصم «الإطلالة الكاملة».</p></div>
-      <div class="b"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>تحويل أعلى من الجوال</h3><p>التجربة التفاعلية تطوّل وقت العميل في المتجر وتعطيه ثقة يكمل الدفع، خصوصاً إن أغلب التسوق عندنا من الجوال.</p></div>
-      <div class="b"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>بيانات تنسيق حقيقية</h3><p>تعرف أي القطع يجربها العملاء مع بعض أكثر، وأي لون يوصل للسلة وأيها يتجرب ويتترك. تبني عليها عروضك وطلبات المخزون.</p></div>
-      <div class="b"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>تميّز عن المنافسين</h3><p>أغلب متاجر الملابس المحلية تعرض صور ثابتة فقط. زر «جرّبها عليك» يخلي تجربة متجرك قريبة من المتاجر العالمية الكبيرة.</p></div>
-      <div class="b"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>خصوصية العميل</h3><p>العميل اللي ما يبي يرفع صورته عنده خيار الشخص الافتراضي، واللي يرفع صورته تنعالج عنده وما تنحفظ بدون إذنه.</p></div>
+    <div class="compare">
+      <figure><div class="imgs"><img src="samples/virtual-front.webp" alt="موديل افتراضي لابس تيشيرت نعناعي وجينز رمادي من الأمام"><img src="samples/virtual-side.webp" alt="نفس الموديل من زاوية جانبية"></div><figcaption>شخص افتراضي: شخص واقعي بس ما هو موجود في الحقيقة</figcaption></figure>
+      <figure id="selfFig" hidden><div class="imgs"><img src="samples/self-front.webp" alt="عميل حقيقي لابس نفس التنسيق من الأمام"><img src="samples/self-side.webp" alt="العميل من زاوية جانبية"></div><figcaption>صورة العميل: نفس الوجه والجسم، والملابس من المتجر</figcaption></figure>
     </div>
     <div>
-      <h2 style="font-size:1.25rem;margin-bottom:14px">كيف تتحول هالتجربة لمنتج حقيقي</h2>
-      <ol class="road">
-        <li><div><b>ربط الكتالوج</b><span>سحب المنتجات وصورها وألوانها ومقاساتها من منصة المتجر (سلة، زد، شوبيفاي) عبر الـAPI.</span></div></li>
-        <li><div><b>تجهيز صور المنتجات</b><span>قص خلفية صورة كل قطعة وتحويلها لطبقة جاهزة للتلبيس، تلقائياً بالذكاء الاصطناعي.</span></div></li>
-        <li><div><b>محرك التلبيس الافتراضي</b><span>نموذج ذكاء اصطناعي (Virtual Try‑On) يلبّس القطع على صورة العميل أو على موديل افتراضي بشكل واقعي مع الطيّات والإضاءة.</span></div></li>
-        <li><div><b>زر «جرّبها عليك» في صفحة المنتج</b><span>إضافة تتركب على المتجر بدون ما يغيّر التاجر تصميمه، مع لوحة تقارير للتاجر.</span></div></li>
+      <h2 style="font-size:1.2rem;margin-bottom:14px">وش يصير لما العميل يضغط «ولّد الإطلالة»</h2>
+      <ol class="flow">
+        <li><div><b>يجمع الصور</b><span>صورة الشخص (موديل افتراضي أو صورة العميل) وصور القطع اللي اختارها من الكتالوج.</span></div></li>
+        <li><div><b>يكتب الوصف تلقائياً</b><span>كل منتج محفوظ معه وصف دقيق للون والقصّة والطباعة، والنظام يركّبها في طلب واحد يطلب الحفاظ على وجه الشخص وتفاصيل كل قطعة.</span></div></li>
+        <li><div><b>يولّد الصورة الأمامية</b><span>يرسل الصور والوصف للنموذج بأعلى دقة، وتاخذ عادة بين ٣٠ و٩٠ ثانية.</span></div></li>
+        <li><div><b>يولّد الزاوية الثانية</b><span>يستخدم الصورة الأولى كمرجع عشان يطلع نفس الشخص ونفس الملابس بوقفة جانبية.</span></div></li>
+        <li><div><b>يحفظ نتائج الموديلات</b><span>نفس التنسيق على نفس الموديل الافتراضي ما يتولد مرتين، والعميل الثاني يشوفه فوراً وبدون تكلفة. صور العملاء نفسها ما تنحفظ.</span></div></li>
       </ol>
+    </div>
+    <div>
+      <h2 style="font-size:1.2rem;margin-bottom:6px">وش يستفيد التاجر</h2>
+      <div class="bgrid">
+        <div class="b"><h3>مرتجعات أقل</h3><p>العميل يشوف القطعة على شخص يشبهه أو عليه هو، ويعرف مقاسه قبل ما يطلب.</p></div>
+        <div class="b"><h3>سلة أكبر</h3><p>يطلع من التجربة بإطلالة كاملة بدل قطعة وحدة، ومعها خصم الإطلالة.</p></div>
+        <div class="b"><h3>صور منتجات بدون تصوير</h3><p>نفس النظام يطلع لك صور موديلات لكل منتج جديد بدون جلسة تصوير.</p></div>
+        <div class="b"><h3>بيانات تنسيق</h3><p>تعرف أي القطع يجربها العملاء مع بعض، وتبني عليها العروض والمخزون.</p></div>
+      </div>
     </div>
   </section>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="prompt.js"></script>
 <script>
 (function(){
-/* ---------- data ---------- */
-const SKINS=['#F3D5BC','#DDB08A','#B98460','#7E5238'];
-const STYLES={
-  top:{tee:'تيشيرت',oversize:'تيشيرت أوفرسايز',polo:'بولو',hoodie:'هودي',shirt:'قميص'},
-  bottom:{jeans:'جينز',chino:'تشينو',jogger:'رياضي',shorts:'شورت'},
-  shoes:{sneaker:'سنيكرز',boot:'بوت',loafer:'لوفر'},
-  acc:{cap:'كاب',glasses:'نظارة شمسية',watch:'ساعة',bag:'شنطة كروس'}
+const STEPS=[{k:'mode',t:'طريقتك'},{k:'top',t:'التيشيرت'},{k:'bottom',t:'البنطلون'},{k:'shoes',t:'الجزمة'},{k:'acc',t:'إضافات'},{k:'look',t:'الإطلالة'}];
+const CAT={top:'القطع العلوية',bottom:'البناطيل',shoes:'الجزم',acc:'الإكسسوارات'};
+// Ready-made results (generated earlier with the same method) shown in demo mode.
+const DEMO={
+  virtual:{match:{model:'m1',top:'r9',bottom:'r8'},imgs:['samples/virtual-front.webp','samples/virtual-side.webp']},
+  self:{match:{top:'r9',bottom:'r8'},imgs:['samples/self-front.webp','samples/self-side.webp']}
 };
-const CAT_NAMES={top:'القطع العلوية',bottom:'البناطيل',shoes:'الجزم',acc:'الإكسسوارات'};
-let products=[
-  {id:'r4',cat:'top',style:'tee',name:'تيشيرت أوفرسايز مطبوع',price:149,sku:'ANQ-T401',img:'products/p4.webp',ar:.93,fit:{ny:.12},colors:[['أسود','#1B1B1D']]},
-  {id:'r9',cat:'top',style:'tee',name:'تيشيرت أوفرسايز سادة',price:119,sku:'ANQ-T409',img:'products/p9.webp',ar:.953,fit:{ny:.1},colors:[['نعناعي','#8FE3CF']]},
-  {id:'r5',cat:'top',style:'hoodie',name:'هودي مطبوع «Soulmates»',price:229,sku:'ANQ-H405',img:'products/p5.webp',ar:.784,fit:{ny:.34,hem:322,sx:.76},colors:[['أسود','#1C1C1E']]},
-  {id:'r6',cat:'top',style:'shirt',name:'قميص كاروهات نص كم',price:179,sku:'ANQ-S406',img:'products/p6.webp',ar:1.098,fit:{ny:.05,hem:318,sx:.9,under:true},colors:[['كحلي','#27315A']]},
-  {id:'r7',cat:'top',style:'tee',name:'تيشيرت كورة مخطط',price:199,sku:'ANQ-F407',img:'products/p7.webp',ar:.673,fit:{ny:.06,hem:314,sx:1.05},colors:[['عنابي وأزرق','#7A1E45']]},
-  {id:'r3',cat:'bottom',style:'jogger',name:'بنطلون نايلون رياضي',price:169,sku:'ANQ-R403',img:'products/p3.webp',ar:.6,fit:{sx:.8},colors:[['أسود ورمادي','#2A2B2E']]},
-  {id:'r8',cat:'bottom',style:'jeans',name:'جينز واسع مغسول',price:209,sku:'ANQ-J408',img:'products/p8.webp',ar:.447,fit:{sx:1.05},colors:[['رمادي','#6D6E70']]},
-  {id:'s1',cat:'shoes',style:'sneaker',name:'سنيكرز جلد',price:249,sku:'ANQ-K701',colors:[['أبيض','#F5F5F2'],['أسود','#1D1D1F']]},
-  {id:'s2',cat:'shoes',style:'boot',name:'بوت شامواه',price:399,sku:'ANQ-B720',colors:[['بني','#6E4A2E'],['رملي','#B08E62']]},
-  {id:'s3',cat:'shoes',style:'loafer',name:'لوفر جلد طبيعي',price:289,sku:'ANQ-L733',colors:[['بني غامق','#4A2F20'],['أسود','#1C1B1B']]},
-  {id:'r1',cat:'acc',style:'cap',name:'كاب شبك مطبوع',price:89,sku:'ANQ-A401',img:'products/p1.webp',ar:1.37,fit:{w:98,bottom:66},colors:[['بيج','#DCD6C4']]},
-  {id:'r2',cat:'acc',style:'cap',name:'كاب فنتج مغسول',price:79,sku:'ANQ-A402',img:'products/p2.webp',ar:1.455,fit:{w:102,bottom:68,dx:4},colors:[['كحلي وعنابي','#3F4A66']]},
-  {id:'a2',cat:'acc',style:'glasses',name:'نظارة شمسية',price:129,sku:'ANQ-A812',colors:[['أسود','#18181A'],['بني','#5B3A23']]},
-  {id:'a3',cat:'acc',style:'watch',name:'ساعة يد كلاسيك',price:349,sku:'ANQ-A825',colors:[['فضي','#D9DCE0'],['ذهبي','#D2AE5E']]},
-  {id:'a4',cat:'acc',style:'bag',name:'شنطة كروس جلد',price:219,sku:'ANQ-A840',colors:[['بني','#7A4D2C'],['أسود','#1D1D1F']]}
-];
+const S={step:0,mode:'virtual',modelId:'m1',photo:null,height:175,weight:75,
+  sel:{top:null,bottom:null,shoes:null,acc:[]},gen:null,live:false,cat:{models:[],products:[]},selfDemo:false};
 
-/* ---------- state ---------- */
-const S={
-  step:0, mode:'avatar', photoKind:'face', photo:null,
-  gender:'m', skin:1, height:175, weight:76, shoe:42,
-  face:{z:1,x:0,y:0}, body:{x:0,y:0,s:1},
-  sel:{top:null,bottom:null,shoes:null,acc:{}},
-  saved:[]
-};
-const STEPS=[
-  {k:'mode',t:'طريقتك'},{k:'top',t:'التيشيرت'},{k:'bottom',t:'البنطلون'},
-  {k:'shoes',t:'الجزمة'},{k:'acc',t:'إضافات'},{k:'look',t:'الإطلالة'}
-];
-
-/* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const byId=id=>products.find(p=>p.id===id);
-function shade(hex,amt){
-  const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;
-  const t=amt<0?0:255,p=Math.abs(amt);
-  r=Math.round((t-r)*p+r);g=Math.round((t-g)*p+g);b=Math.round((t-b)*p+b);
-  return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
-}
-function lum(hex){const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255}
-const mir=s=>`<g transform="translate(300 0) scale(-1 1)">${s}</g>`;
-const both=s=>s+mir(s);
-const money=n=>n.toLocaleString('ar-SA')+' <small>ر.س</small>';
-let uidN=0;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=n=>n.toLocaleString('ar-SA');
+const money=n=>num(n)+' <small>ر.س</small>';
+const P=id=>S.cat.products.find(p=>p.id===id);
+const model=()=>S.cat.models.find(m=>m.id===S.modelId);
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600)}
 
-/* ---------- garment drawing (shared coordinate system, 300 x 590) ---------- */
-function crewNeck(skin,trim){
-  const f=skin||'none';
-  return `<path d="M128 121 Q150 143 172 121 Z" fill="${f}"/><path d="M128 121 Q150 143 172 121" fill="none" stroke="${trim}" stroke-width="4" stroke-linecap="round"/>`;
-}
-function torso(c,hem){return `<path d="M112 121 Q150 130 188 121 L206 134 L198 186 Q194 250 196 ${hem} L104 ${hem} Q106 250 102 186 L94 134 Z" fill="${c}"/>`}
-function shortSleeves(c,d,w=36){return both(`<path d="M106 134 L88 204" stroke="${c}" stroke-width="${w}"/><path d="M91.6 190 L88 204" stroke="${d}" stroke-width="${w}"/>`)}
-function longSleeves(c,d){return both(`<path d="M104 136 L85 226 L77 304" fill="none" stroke="${c}" stroke-width="30" stroke-linejoin="round"/><path d="M78.2 293 L77 305" stroke="${d}" stroke-width="30"/>`)}
-function drawTop(style,c,skin){
-  const d=shade(c,lum(c)<.25?.22:-.2), l=shade(c,.18);
-  if(style==='tee') return shortSleeves(c,d)+torso(c,306)+crewNeck(skin,d)+`<path d="M104 300 L196 300" stroke="${d}" stroke-width="3" opacity=".5"/>`;
-  if(style==='oversize') return `<g transform="translate(150 121) scale(1.09 1.06) translate(-150 -121)">`+both(`<path d="M106 134 L84 222" stroke="${c}" stroke-width="42"/><path d="M87 210 L84 222" stroke="${d}" stroke-width="42"/>`)+torso(c,314)+`</g>`+crewNeck(skin,d);
-  if(style==='polo') return shortSleeves(c,d,34)+torso(c,304)+`<path d="M136 121 Q150 132 164 121 Z" fill="${skin||'none'}"/>`+`<rect x="145" y="128" width="10" height="40" rx="2" fill="${l}" stroke="${d}" stroke-width="1.2"/><circle cx="150" cy="142" r="2" fill="${d}"/><circle cx="150" cy="156" r="2" fill="${d}"/>`+both(`<path d="M128 118 L150 132 L141 150 L121 128 Z" fill="${l}" stroke="${d}" stroke-width="1.2" stroke-linejoin="round"/>`);
-  if(style==='hoodie') return longSleeves(c,d)+torso(c,316)+`<rect x="103" y="302" width="94" height="14" rx="3" fill="${d}"/>`+`<path d="M116 126 Q150 100 184 126 Q150 150 116 126 Z" fill="${d}"/>`+`<path d="M130 126 Q150 146 170 126" fill="${skin||'none'}" />`+`<path d="M118 244 L182 244 L190 290 L110 290 Z" fill="${shade(c,-.07)}" stroke="${d}" stroke-width="1.5" stroke-linejoin="round"/>`+`<path d="M141 134 L139 182 M159 134 L161 182" stroke="${shade(c,.55)}" stroke-width="2.4" stroke-linecap="round"/>`;
-  if(style==='shirt') return longSleeves(c,d)+`<path d="M112 121 Q150 130 188 121 L206 134 L198 186 Q194 250 196 304 Q150 318 104 304 Q106 250 102 186 L94 134 Z" fill="${c}"/>`+`<path d="M138 121 L150 140 L162 121 Z" fill="${skin||'none'}"/>`+`<path d="M150 140 L150 308" stroke="${d}" stroke-width="1.6"/>`+[160,190,220,250,280].map(y=>`<circle cx="152.5" cy="${y}" r="2" fill="${d}"/>`).join('')+`<rect x="162" y="162" width="20" height="22" rx="2" fill="none" stroke="${d}" stroke-width="1.3"/>`+both(`<path d="M126 116 L150 140 L136 152 L120 126 Z" fill="${l}" stroke="${d}" stroke-width="1.2" stroke-linejoin="round"/>`);
-  return '';
-}
-function drawBottom(style,c){
-  const d=shade(c,lum(c)<.2?.2:-.22), l=shade(c,.28);
-  const hip=`<path d="M104 296 L196 296 L196 340 Q180 362 150 362 Q120 362 104 340 Z" fill="${c}"/>`;
-  const band=`<rect x="104" y="290" width="92" height="14" rx="2" fill="${d}"/>`;
-  if(style==='shorts') return both(`<path d="M131 320 L129 404" stroke="${c}" stroke-width="48"/><path d="M129.3 394 L129 404" stroke="${d}" stroke-width="48"/>`)+hip+band+`<path d="M150 304 L150 340" stroke="${d}" stroke-width="1.6"/>`;
-  let s=both(`<path d="M130 320 L126 542" stroke="${c}" stroke-width="${style==='jogger'?44:42}"/>`)+hip+band;
-  if(style==='jeans') s+=both(`<path d="M109 332 L105.5 538" stroke="${l}" stroke-width="1.4" stroke-dasharray="4 3"/><path d="M109 306 Q126 310 131 304" fill="none" stroke="${l}" stroke-width="1.6"/><rect x="118" y="289" width="4" height="16" fill="${l}" opacity=".7"/>`)+`<path d="M150 304 L150 348 M150 348 Q158 344 160 332" fill="none" stroke="${l}" stroke-width="1.6"/>`;
-  if(style==='chino') s+=both(`<path d="M129 366 L126.5 540" stroke="${l}" stroke-width="1.4" opacity=".7"/><path d="M110 306 L120 332" stroke="${d}" stroke-width="1.6"/>`)+`<path d="M150 304 L150 346" stroke="${d}" stroke-width="1.6"/>`;
-  if(style==='jogger') s+=both(`<path d="M126.5 522 L126 544" stroke="${d}" stroke-width="36"/><path d="M108.5 330 L105 520" stroke="${shade(c,.7)}" stroke-width="3" opacity=".85"/>`)+`<path d="M145 302 L143 322 M155 302 L157 322" stroke="${shade(c,.75)}" stroke-width="2" stroke-linecap="round"/>`;
-  return s;
-}
-function drawShoes(style,c){
-  const d=shade(c,lum(c)<.2?.25:-.3);
-  const sole=lum(c)>.8?'#C9CED5':'#F2F1EC';
-  let one='';
-  if(style==='sneaker') one=`<path d="M103 561 Q102 543 118 539 Q131 537 139 545 Q151 550 152 558 L152 561 Z" fill="${c}"/><rect x="100" y="557" width="54" height="8" rx="4" fill="${sole}" stroke="${d}" stroke-width=".8"/><path d="M117 543 L131 548 M114 549 L128 553" stroke="${d}" stroke-width="1.6" stroke-linecap="round"/>`;
-  if(style==='boot') one=`<path d="M106 562 L106 510 Q125 504 145 510 L146 543 Q154 549 154 562 Z" fill="${c}"/><rect x="106" y="509" width="39" height="7" rx="2" fill="${d}"/><rect x="103" y="559" width="53" height="7" rx="3" fill="${shade(c,-.5)}"/>`;
-  if(style==='loafer') one=`<path d="M103 562 Q104 547 120 545 Q139 544 152 556 L152 562 Z" fill="${c}"/><path d="M114 549 Q124 555 134 549" fill="none" stroke="${d}" stroke-width="2"/><rect x="101" y="560" width="53" height="5" rx="2.5" fill="${shade(c,-.45)}"/>`;
-  return both(one);
-}
-function drawAcc(style,c){
-  const d=shade(c,lum(c)<.25?.3:-.3);
-  if(style==='cap') return `<path d="M113 60 Q113 21 150 21 Q187 21 187 60 Z" fill="${c}"/><path d="M150 22 L150 58 M131 27 Q126 42 126 58 M169 27 Q174 42 174 58" stroke="${d}" stroke-width="1.2" fill="none"/><ellipse cx="150" cy="61" rx="42" ry="7.5" fill="${d}"/><circle cx="150" cy="22" r="3" fill="${d}"/>`;
-  if(style==='glasses') return `<rect x="126" y="64" width="21" height="14" rx="6" fill="${c}" opacity=".94"/><rect x="153" y="64" width="21" height="14" rx="6" fill="${c}" opacity=".94"/><path d="M147 69 Q150 66 153 69 M126 68 L119 66 M174 68 L181 66" stroke="${c}" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M130 68 L136 67 M157 68 L163 67" stroke="#fff" stroke-width="1.5" opacity=".35" stroke-linecap="round"/>`;
-  if(style==='watch') return `<rect x="66" y="294" width="22" height="11" rx="3" fill="${shade(c,-.35)}"/><circle cx="77" cy="299.5" r="6.5" fill="${shade(c,.3)}" stroke="${c}" stroke-width="2.2"/><path d="M77 299.5 L77 296 M77 299.5 L79.5 300.5" stroke="#333" stroke-width="1" stroke-linecap="round"/>`;
-  if(style==='bag') return `<path d="M194 131 L118 276" stroke="${d}" stroke-width="5" stroke-linecap="round"/><rect x="92" y="270" width="48" height="38" rx="7" fill="${c}"/><path d="M92 284 Q116 294 140 284" fill="none" stroke="${d}" stroke-width="2"/><circle cx="116" cy="290" r="2.6" fill="#D6B25E"/>`;
-  return '';
-}
-
-/* sizes / body */
-function bodyInfo(st){
-  const bmi=st.weight/Math.pow(st.height/100,2);
-  const idx=bmi<20.5?0:bmi<23.5?1:bmi<27?2:bmi<31?3:4;
-  const scale=[.9,.97,1.05,1.13,1.21][idx]*(st.gender==='f'?.94:1);
-  const top=['S','M','L','XL','XXL'][idx];
-  const waist=st.gender==='f'?[34,36,38,40,42][idx]:[30,32,34,36,38][idx];
-  const build=['نحيفة','متوسطة','رياضية','ممتلئة','ممتلئة جداً'][idx];
-  return {bmi,scale,top,waist,build};
-}
-function imgLayer(p){
-  const f=p.fit||{};let x,y,w,h;
-  if(p.cat==='top'){const hem=f.hem||306;h=(hem-121)/(1-(f.ny||0));w=h*p.ar*(f.sx||1);x=150-w/2;y=121-(f.ny||0)*h}
-  else if(p.cat==='bottom'){h=(f.y1||550)-287;w=h*p.ar*(f.sx||1);x=150-w/2;y=287}
-  else if(p.cat==='shoes'){w=f.w||112;h=w/p.ar;x=150-w/2;y=(f.bottom||568)-h}
-  else {const D={cap:{w:92,bottom:66,dx:0},glasses:{w:60,bottom:82,dx:0},watch:{w:24,bottom:308,dx:-73},bag:{w:56,bottom:314,dx:-34}}[p.style]||{w:90,bottom:66,dx:0};
-    w=f.w||D.w;h=w/p.ar;x=150-w/2+(f.dx!=null?f.dx:D.dx);y=(f.bottom||D.bottom)-h}
-  return `<image href="${p.img}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="none"/>`;
-}
-function piece(sel,sk){const p=byId(sel.id);if(p.img)return imgLayer(p);const c=colorOf(sel)[1];return p.cat==='top'?drawTop(p.style,c,sk):p.cat==='bottom'?drawBottom(p.style,c):p.cat==='shoes'?drawShoes(p.style,c):drawAcc(p.style,c)}
-function colorOf(sel){const p=byId(sel.id);return p.colors[sel.c]||p.colors[0]}
-
-/* full figure */
-function figure(st){
-  const u='u'+(++uidN);
-  const skin=SKINS[st.skin];
-  const photoBody=st.mode==='photo'&&st.photoKind==='body'&&st.photo;
-  const faceImg=st.mode==='photo'&&st.photoKind==='face'&&st.photo;
-  const sk=photoBody?null:skin;
-  const sel=st.sel;
-  const top=sel.top?piece(sel.top,sk):drawTop('tee','#D3D7DC',sk);
-  const bottom=sel.bottom?piece(sel.bottom):drawBottom('shorts','#B7BDC4');
-  const shoes=sel.shoes?drawShoes(byId(sel.shoes.id).style,colorOf(sel.shoes)[1]):'';
-  const acc=k=>Object.keys(sel.acc).filter(id=>byId(id)&&byId(id).style===k).map(id=>piece({id,c:sel.acc[id]})).join('');
-  const tuck=sel.top&&byId(sel.top.id).fit&&byId(sel.top.id).fit.under;
-  const floor=`<ellipse class="floor" cx="150" cy="566" rx="86" ry="10"/>`;
-
-  if(photoBody){
-    const b=st.body;
-    return `<defs><clipPath id="${u}c"><rect x="22" y="-8" width="256" height="594"/></clipPath></defs>
-      <image href="${st.photo}" x="22" y="-8" width="256" height="594" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u}c)"/>
-      <g transform="translate(${b.x} ${b.y}) translate(150 320) scale(${b.s}) translate(-150 -320)" opacity=".97">${bottom}${shoes}${top}${acc('watch')}${acc('bag')}${acc('cap')}${acc('glasses')}</g>`;
-  }
-  const info=bodyInfo(st);
-  const hairC=st.gender==='f'?'#3B2A20':'#2A201A';
-  const backHair=st.gender==='f'&&!faceImg?`<path d="M109 66 Q104 18 150 18 Q196 18 191 66 L199 152 Q176 162 150 148 Q124 162 101 152 Z" fill="${hairC}"/>`:'';
-  const bare=sel.shoes?'':both(`<ellipse cx="127" cy="557" rx="18" ry="7.5" fill="${skin}"/>`);
-  const body=`
-    ${both(`<path d="M132 300 L128 550" stroke="${skin}" stroke-width="31" stroke-linecap="round"/>`)}
-    ${both(`<path d="M100 140 L84 228 L76 312" fill="none" stroke="${skin}" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>`)}
-    ${bare}
-    <rect x="138" y="96" width="24" height="34" fill="${skin}"/>
-    <path d="M110 124 Q150 118 190 124 L198 186 Q194 250 194 304 L106 304 Q106 250 102 186 Z" fill="${shade(skin,-.06)}"/>`;
-  const hands=both(`<circle cx="76" cy="317" r="11" fill="${skin}"/>`);
-  let head;
-  if(faceImg){
-    const f=st.face, sz=96*f.z;
-    head=`<defs><clipPath id="${u}f"><ellipse cx="150" cy="70" rx="33" ry="41"/></clipPath></defs>
-      <g clip-path="url(#${u}f)"><rect x="110" y="25" width="80" height="90" fill="${skin}"/><image href="${st.photo}" x="${150-sz/2+f.x}" y="${70-sz/2+f.y}" width="${sz}" height="${sz}" preserveAspectRatio="xMidYMid slice"/></g>
-      <ellipse cx="150" cy="70" rx="33" ry="41" fill="none" stroke="${shade(skin,-.25)}" stroke-width="1.5"/>`;
-  } else {
-    const fh=st.gender==='f'
-      ?`<path d="M118 62 Q118 28 150 28 Q183 28 184 64 Q172 44 146 46 Q128 48 118 62 Z" fill="${hairC}"/>`
-      :`<path d="M118 66 Q113 27 150 27 Q187 27 182 66 Q178 45 150 43 Q123 45 118 66 Z" fill="${hairC}"/>`;
-    head=`
-      ${both(`<ellipse cx="120" cy="74" rx="5" ry="8" fill="${shade(skin,-.08)}"/>`)}
-      <ellipse cx="150" cy="72" rx="31" ry="37" fill="${skin}"/>
-      ${both(`<circle cx="139" cy="73" r="2.6" fill="#2B2320"/><path d="M133 64 Q139 61 145 64" stroke="${hairC}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`)}
-      <path d="M150 76 Q148 82 151 84" stroke="${shade(skin,-.3)}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <path d="M142 92 Q150 97 158 92" stroke="${shade(skin,-.4)}" stroke-width="2" fill="none" stroke-linecap="round"/>
-      ${fh}`;
-  }
-  const g=`translate(150 0) scale(${info.scale} 1) translate(-150 0)`;
-  return `${floor}${backHair}
-    <g transform="${g}">${body}${tuck?top+bottom+shoes:bottom+shoes+top}${hands}${acc('watch')}${acc('bag')}</g>
-    ${head}${acc('cap')}${acc('glasses')}`;
-}
-
-/* product-only thumbnails */
-const VB={
-  top:'58 94 184 236', bottom:'86 282 128 286', shoes:'96 500 108 70',
-  cap:'104 14 92 58', glasses:'114 56 72 28', watch:'58 284 38 30', bag:'84 124 118 192'
-};
-function thumb(p,ci){
-  if(p.img) return `<img src="${p.img}" alt="" loading="lazy">`;
-  const c=p.colors[ci||0][1];
-  let inner='',vb;
-  if(p.cat==='top'){inner=drawTop(p.style,c,null);vb=VB.top}
-  else if(p.cat==='bottom'){inner=drawBottom(p.style,c);vb=VB.bottom}
-  else if(p.cat==='shoes'){inner=drawShoes(p.style,c);vb=VB.shoes}
-  else {inner=drawAcc(p.style,c);vb=VB[p.style]}
-  return `<svg viewBox="${vb}" aria-hidden="true" preserveAspectRatio="xMidYMid meet">${inner}</svg>`;
-}
-
-/* ---------- mirror ---------- */
-function allSelected(){
-  const out=[];const s=S.sel;
-  ['top','bottom','shoes'].forEach(k=>{if(s[k])out.push({p:byId(s[k].id),c:s[k].c})});
-  Object.keys(s.acc).forEach(id=>{if(byId(id))out.push({p:byId(id),c:s.acc[id]})});
+function chosen(){
+  const s=S.sel,out=[];
+  ['top','bottom','shoes'].forEach(k=>{if(s[k]&&P(s[k]))out.push(P(s[k]))});
+  s.acc.forEach(id=>{if(P(id))out.push(P(id))});
   return out;
 }
-function renderMirror(){
-  $('#fig').innerHTML=figure(S);
-  $('#mirrorLabel').textContent=S.mode==='avatar'?'شخص افتراضي':S.photo?(S.photoKind==='face'?'بوجهك':'على صورتك'):'بانتظار صورتك';
-  const items=allSelected();
-  $('#chips').innerHTML=items.length?items.map(({p,c})=>`<span class="chip"><i style="background:${p.colors[c][1]}"></i>${esc(p.name)}</span>`).join(''):'<span class="muted" style="font-size:.85rem">الموديل لابس ملابس أساسية. اختر قطعك من الخطوات.</span>';
-  const sum=items.reduce((a,{p})=>a+p.price,0);
-  $('#runTotal').innerHTML=sum?money(sum):'';
+function sizes(){
+  const bmi=S.weight/Math.pow(S.height/100,2),i=bmi<20.5?0:bmi<23.5?1:bmi<27?2:bmi<31?3:4;
+  const f=S.mode==='virtual'&&model()&&model().gender==='f';
+  return {top:['S','M','L','XL','XXL'][i],waist:(f?[34,36,38,40,42]:[30,32,34,36,38])[i]};
+}
+
+/* ---------- side summary ---------- */
+function renderSide(){
+  let who;
+  if(S.mode==='virtual'){const m=model();who=m&&m.img?`<img src="${esc(m.img)}" alt="الموديل ${esc(m.name)}"><span class="lbl">${esc(m.name)} · موديل افتراضي</span>`:`<div class="none">اختر موديل</div>`}
+  else who=S.photo?`<img src="${S.photo}" alt="صورتك"><span class="lbl">صورتك</span>`:`<div class="none">ارفع صورتك من الخطوة الأولى</div>`;
+  $('#who').innerHTML=who;
+  const items=chosen();
+  $('#pieces').innerHTML=items.length?items.map(p=>`<div class="piece"><div class="pic"><img src="${esc(p.img)}" alt=""></div><div><b>${esc(p.name)}</b><small>${esc(p.color)}</small></div><span class="price">${money(p.price)}</span></div>`).join(''):'<span class="muted" style="font-size:.85rem">القطع اللي تختارها تطلع هنا.</span>';
+  const sum=items.reduce((a,p)=>a+p.price,0);$('#runTotal').innerHTML=sum?money(sum):'';
 }
 
 /* ---------- steps ---------- */
-function canEnter(i){
-  if(i<=1) return true;
-  if(i>=2&&!S.sel.top) return false;
-  if(i>=3&&!S.sel.bottom) return false;
-  return true;
-}
-function renderSteps(){
-  $('#steps').innerHTML=STEPS.map((s,i)=>`<li class="${i<S.step?'done':''} ${i===S.step?'cur':''}"><button data-go="${i}" ${canEnter(i)?'':'disabled'} aria-current="${i===S.step?'step':'false'}"><span class="bar"></span>${s.t}</button></li>`).join('');
-}
-function head(title,sub){
-  return `<div class="step-head"><h2>${title}</h2><span class="step-count">خطوة ${(S.step+1).toLocaleString('ar-SA')} من ${STEPS.length.toLocaleString('ar-SA')}</span></div><p class="step-sub">${sub}</p>`;
-}
+function canEnter(i){if(i<=1)return true;if(!S.sel.top)return false;if(i>=3&&!S.sel.bottom)return false;return true}
+function head(t,sub){return `<div class="step-head"><h2>${t}</h2><span class="step-count">خطوة ${num(S.step+1)} من ${num(STEPS.length)}</span></div><p class="step-sub">${sub}</p>`}
 function productGrid(cat){
-  const list=products.filter(p=>p.cat===cat);
-  let html='<div class="grid">';
-  if(cat==='shoes') html+=`<button class="card none-card ${S.sel.shoes?'':'on'}" data-none="shoes"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M6 18 18 6"/></svg><span>بدون جزمة</span></button>`;
-  list.forEach(p=>{
-    const on=cat==='acc'?(p.id in S.sel.acc):(S.sel[cat]&&S.sel[cat].id===p.id);
-    const ci=cat==='acc'?(S.sel.acc[p.id]||0):(on?S.sel[cat].c:0);
-    html+=`<div class="card ${on?'on':''}">
-      <button class="card-main" data-pick="${p.id}" aria-pressed="${on}">
-        <div class="pic">${thumb(p,ci)}</div>
-        <div class="meta"><span class="name">${esc(p.name)}${p.custom?'<span class="new-badge">جديد</span>':''}</span><span class="price">${money(p.price)}</span></div>
-      </button>
-      <div class="swatches">${p.colors.length<2?`<span class="muted" style="font-size:.78rem">${esc(p.colors[0][0])}</span>`:p.colors.map((col,i)=>`<button class="sw" style="background:${col[1]}" data-pick="${p.id}" data-c="${i}" aria-pressed="${on&&ci===i}" aria-label="${esc(col[0])}" title="${esc(col[0])}"></button>`).join('')}</div>
-    </div>`;
-  });
-  return html+'</div>';
+  const list=S.cat.products.filter(p=>p.cat===cat);
+  if(!list.length) return `<div class="empty">ما فيه ${CAT[cat]} في الكتالوج حالياً. التاجر يقدر يضيفها من «لوحة التاجر».</div>`;
+  return '<div class="grid">'+list.map(p=>{
+    const on=cat==='acc'?S.sel.acc.includes(p.id):S.sel[cat]===p.id;
+    return `<button class="card ${on?'on':''}" data-pick="${p.id}" aria-pressed="${on}"><div class="pic"><img src="${esc(p.img)}" alt="" loading="lazy"></div><div class="meta"><span class="name">${esc(p.name)}${p.custom?'<span class="new-badge">جديد</span>':''}</span><span class="color">${esc(p.color)}</span><span class="price">${money(p.price)}</span></div></button>`;
+  }).join('')+'</div>';
 }
-const ICON_AVATAR='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="12" r="6"/><path d="M14 44V28c0-5 4-9 10-9s10 4 10 9v16"/><path d="M19 44V32M29 44V32"/></svg>';
-const ICON_PHOTO='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="38" height="28" rx="5"/><path d="M17 11l3-5h8l3 5"/><circle cx="24" cy="25" r="7"/></svg>';
-function range(id,label,val,min,max,step,show){return `<div class="field"><label for="${id}">${label}<span class="val" id="${id}V">${show}</span></label><input type="range" dir="ltr" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`}
+const ICON_V='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="12" r="6"/><path d="M14 44V28c0-5 4-9 10-9s10 4 10 9v16"/><path d="M19 44V32M29 44V32"/></svg>';
+const ICON_S='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="38" height="28" rx="5"/><path d="M17 11l3-5h8l3 5"/><circle cx="24" cy="25" r="7"/></svg>';
+const LOCK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
 function stepMode(){
-  const info=bodyInfo(S);
-  let h=head('كيف تبي تجرّب؟','اختر شخص افتراضي قريب من شكلك، أو ارفع صورتك وشوف الملابس عليك.');
-  h+=`<div class="choices">
-    <button class="choice" data-mode="avatar" aria-pressed="${S.mode==='avatar'}">${ICON_AVATAR}<b>شخص افتراضي</b><span>تحدد الشكل والطول والوزن</span></button>
-    <button class="choice" data-mode="photo" aria-pressed="${S.mode==='photo'}">${ICON_PHOTO}<b>صورتك</b><span>صورة لوجهك أو لجسمك كامل</span></button>
-  </div><div class="fields">`;
-  if(S.mode==='photo'){
-    h+=`<div class="field"><span class="lbl">نوع الصورة</span><div class="seg"><button data-pk="face" aria-pressed="${S.photoKind==='face'}">صورة وجه</button><button data-pk="body" aria-pressed="${S.photoKind==='body'}">صورة الجسم كامل</button></div></div>
-    <label class="upload" for="photoIn"><span class="thumb">${S.photo?`<img src="${S.photo}" alt="">`:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>'}</span>
-      <span><b>${S.photo?'غيّر الصورة':'ارفع صورة من جهازك'}</b><span>${S.photoKind==='face'?'صورة أمامية واضحة للوجه':'صورة واقف من الرأس للقدم، والخلفية بسيطة'}</span></span>
-      <input type="file" id="photoIn" accept="image/*"></label>
-    <p class="note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>الصورة تبقى في جهازك داخل هالصفحة، وما تنرفع لأي مكان.</p>`;
-    if(S.photo&&S.photoKind==='face') h+=`<div class="row2">${range('fz','تكبير الوجه',S.face.z,.6,2.2,.02,'')}${range('fx','يمين ويسار',S.face.x,-40,40,1,'')}${range('fy','فوق وتحت',S.face.y,-40,40,1,'')}</div>`;
-    if(S.photo&&S.photoKind==='body') h+=`<p class="note">حرّك الملابس لين تركب على جسمك. في النسخة الحقيقية الذكاء الاصطناعي يسوي هالخطوة تلقائياً.</p><div class="row2">${range('bs','حجم الملابس',S.body.s,.5,1.6,.01,'')}${range('bx','يمين ويسار',S.body.x,-120,120,1,'')}${range('by','فوق وتحت',S.body.y,-200,200,1,'')}</div>`;
+  let h=head('على مين نجرّب؟','اختر موديل افتراضي يشبهك، أو ارفع صورتك وتطلع لك الملابس عليك أنت.');
+  h+=`<div class="choices"><button class="choice" data-mode="virtual" aria-pressed="${S.mode==='virtual'}">${ICON_V}<b>شخص افتراضي</b><span>شخص واقعي ما هو موجود في الحقيقة</span></button>
+    <button class="choice" data-mode="self" aria-pressed="${S.mode==='self'}">${ICON_S}<b>صورتك</b><span>صورة لك واقف كامل</span></button></div><div class="fields">`;
+  if(S.mode==='virtual'){
+    h+=`<div class="models">${S.cat.models.map(m=>`<button class="model" data-model="${m.id}" aria-pressed="${S.modelId===m.id}" ${m.img?'':'disabled'}>
+      <div class="ph">${m.img?`<img src="${esc(m.img)}" alt="">`:`<span class="pending">صورة الموديل تتولد أول ما يتشغل الموقع على السيرفر</span>`}</div>
+      <div class="meta"><b>${esc(m.name)}</b><span>${esc(m.desc)}</span></div></button>`).join('')}</div>`;
+  } else {
+    h+=`<label class="upload" for="photoIn"><span class="thumb">${S.photo?`<img src="${S.photo}" alt="">`:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>'}</span>
+      <span><b>${S.photo?'غيّر الصورة':'ارفع صورتك'}</b><span>صورة واقف من الراس للقدم</span></span><input type="file" id="photoIn" accept="image/png,image/jpeg,image/webp"></label>
+      <ul class="tips"><li>وقفة مستقيمة والجسم كامل ظاهر</li><li>إضاءة واضحة وخلفية بسيطة</li><li>لبس مو واسع مرة عشان يبان شكل الجسم</li></ul>
+      <p class="note">${LOCK}${S.live?'صورتك تنرسل لتوليد الإطلالة فقط، وما تنحفظ عندنا.':'في وضع العرض صورتك تبقى في جهازك وما تنرسل لأي مكان.'}</p>`;
   }
-  if(S.mode==='avatar'||S.photoKind==='face'){
-    h+=`<div class="row2"><div class="field"><span class="lbl">الشكل</span><div class="seg"><button data-g="m" aria-pressed="${S.gender==='m'}">رجالي</button><button data-g="f" aria-pressed="${S.gender==='f'}">نسائي</button></div></div>
-      <div class="field"><span class="lbl">لون البشرة</span><div class="skins">${SKINS.map((c,i)=>`<button class="skin" style="background:${c}" data-skin="${i}" aria-pressed="${S.skin===i}" aria-label="درجة ${i+1}"></button>`).join('')}</div></div></div>`;
-  }
-  h+=`<div class="row2">${range('hIn','الطول',S.height,145,205,1,S.height+' سم')}${range('wIn','الوزن',S.weight,40,140,1,S.weight+' كجم')}</div>
-    <div class="row2"><div class="field"><label for="shoeIn">مقاس الجزمة</label><select id="shoeIn">${[38,39,40,41,42,43,44,45,46].map(n=>`<option ${n===S.shoe?'selected':''}>${n}</option>`).join('')}</select></div>
-    <div class="field"><span class="lbl">البنية المتوقعة</span><div class="muted" id="buildOut" style="padding-top:8px">${info.build} · مقاس ${info.top}</div></div></div>
-  </div>`;
+  h+=`<div class="row2"><div class="field"><label for="hIn">الطول<span class="val" id="hInV">${S.height} سم</span></label><input type="range" dir="ltr" id="hIn" min="145" max="205" value="${S.height}"></div>
+    <div class="field"><label for="wIn">الوزن<span class="val" id="wInV">${S.weight} كجم</span></label><input type="range" dir="ltr" id="wIn" min="40" max="140" value="${S.weight}"></div></div>
+    <p class="note">الطول والوزن نستخدمها عشان نقترح لك المقاس.</p></div>`;
   return h;
 }
-function stepLook(){
-  const items=allSelected(), info=bodyInfo(S);
-  const sub=items.reduce((a,{p})=>a+p.price,0);
-  const full=S.sel.top&&S.sel.bottom&&S.sel.shoes;
-  const disc=full?Math.round(sub*.1):0;
-  const sizeFor=p=>p.cat==='top'?info.top:p.cat==='bottom'?String(info.waist):p.cat==='shoes'?String(S.shoe):'مقاس واحد';
-  let h=head('إطلالتك جاهزة','هذي القطع اللي اخترتها من متجر أناقة، مع المقاس المقترح لك.');
-  h+=`<div class="look">${items.map(({p,c})=>`<div class="line-item"><div class="pic">${thumb(p,c)}</div><div><b>${esc(p.name)}</b><small>${esc(p.colors[c][0])} · مقاس ${sizeFor(p)}</small></div><span class="price">${money(p.price)}</span></div>`).join('')}
-    <div class="totals"><div><span>المجموع</span><span>${money(sub).replace(/<[^>]+>/g,'')}</span></div>
-    ${full?`<div class="save"><span>خصم الإطلالة الكاملة ١٠٪</span><span>− ${disc.toLocaleString('ar-SA')} ر.س</span></div>`:`<div class="muted" style="font-size:.85rem"><span>أضف جزمة وتحصل خصم الإطلالة الكاملة ١٠٪</span></div>`}
+function lineItems(items){
+  const z=sizes(),sub=items.reduce((a,p)=>a+p.price,0),full=!!(S.sel.top&&S.sel.bottom&&S.sel.shoes),disc=full?Math.round(sub*.1):0;
+  const sz=p=>p.cat==='top'?z.top:p.cat==='bottom'?z.waist:p.cat==='shoes'?'حسب مقاسك':'مقاس واحد';
+  return `<div>${items.map(p=>`<div class="line-item"><div class="pic"><img src="${esc(p.img)}" alt=""></div><div><b>${esc(p.name)}</b><small>${esc(p.color)} · مقاس ${sz(p)}</small></div><span class="price">${money(p.price)}</span></div>`).join('')}</div>
+    <div class="totals"><div><span>المجموع</span><span>${num(sub)} ر.س</span></div>
+    ${full?`<div class="save"><span>خصم الإطلالة الكاملة ١٠٪</span><span>− ${num(disc)} ر.س</span></div>`:''}
     <div class="grand"><span>الإجمالي</span><span class="price">${money(sub-disc)}</span></div></div>
-    <div class="fitbox"><b>المقاس المقترح لك</b><div class="sizes"><span class="size">التيشيرت <b>${info.top}</b></span><span class="size">البنطلون <b>${info.waist}</b></span><span class="size">الجزمة <b>${S.shoe}</b></span></div><span class="muted" style="font-size:.82rem">محسوب من الطول ${S.height} سم والوزن ${S.weight} كجم. تقدر تعدّلها من الخطوة الأولى.</span></div>
-    <div class="actions"><button class="btn primary" id="addCart">أضف الإطلالة للسلة</button><button class="btn" id="saveLook">احفظ للمقارنة</button><button class="btn ghost" id="restart">إطلالة جديدة</button></div>
-    ${S.saved.length?`<div><b style="font-size:.9rem">إطلالاتك المحفوظة</b><div class="saved">${S.saved.map((s,i)=>`<button data-load="${i}"><svg viewBox="22 -8 256 594">${figure(s)}</svg>${s.total.toLocaleString('ar-SA')} ر.س</button>`).join('')}</div></div>`:''}
-  </div>`;
+    <div class="callout"><b>المقاس المقترح لك</b><div class="sizes"><span class="size">التيشيرت <b>${z.top}</b></span><span class="size">البنطلون <b>${z.waist}</b></span></div></div>`;
+}
+function stepLook(){
+  const items=chosen(),g=S.gen;
+  let h=head('إطلالتك','نولّد لك صورة حقيقية للتنسيق من زاويتين.')+'<div class="gen">';
+  if(!g){
+    h+=`<div class="shots"><div class="shot"><span class="tag">من الأمام</span></div><div class="shot"><span class="tag">من الجنب</span></div></div>
+      <div><button class="btn primary big" id="genBtn">ولّد الإطلالة</button></div>
+      <p class="note">${S.live?'التوليد ياخذ عادة من ٣٠ إلى ٩٠ ثانية.':'وضع العرض: النتائج هنا أمثلة جاهزة تولدت بنفس الطريقة.'}</p>`;
+  } else if(g.state==='loading'){
+    h+=`<div class="shots"><div class="shot loading"><span class="tag">من الأمام</span></div><div class="shot loading"><span class="tag">من الجنب</span></div></div>
+      <div class="status"><span class="spin"></span><span id="genStatus">نجهّز الصور...</span></div>`;
+  } else if(g.state==='done'){
+    h+=`<div class="shots">${g.images.map((src,i)=>`<div class="shot"><img src="${src}" alt="الإطلالة ${i?'من الجنب':'من الأمام'}"><span class="tag">${i?'من الجنب':'من الأمام'}</span></div>`).join('')}</div>`;
+    if(g.example) h+=`<div class="callout warn"><b>مثال جاهز</b><span class="muted" style="font-size:.88rem">${g.example}</span></div>`;
+  } else if(g.state==='miss'){
+    h+=`<div class="callout warn"><b>التوليد يشتغل على الموقع الحي</b><span class="muted" style="font-size:.88rem">هذي صفحة عرض بدون اتصال بخدمة توليد الصور. على الموقع الحي تطلع صورة هالتنسيق هنا خلال دقيقة تقريباً. عندنا مثال جاهز لتنسيق التيشيرت النعناعي مع الجينز الرمادي${S.mode==='virtual'?' على الموديل سالم':''}.</span><div><button class="btn" id="tryDemo">شوف المثال الجاهز</button></div></div>`;
+  } else if(g.state==='error'){
+    h+=`<div class="callout warn"><b>ما قدرنا نولّد الصورة</b><span class="muted">${esc(g.msg)}</span><div><button class="btn" id="genBtn">جرّب مرة ثانية</button></div></div>`;
+  }
+  h+=lineItems(items);
+  h+=`<div class="actions"><button class="btn primary" id="addCart">أضف الإطلالة للسلة</button>${g&&g.state==='done'&&!g.example&&S.live?'<button class="btn" id="genBtn">ولّد مرة ثانية</button>':''}<button class="btn ghost" id="restart">إطلالة جديدة</button></div>`;
+  const prompt=g&&g.prompt||window.TryOnPrompt.tryOnPrompt({mode:S.mode,items});
+  h+=`<details><summary>الوصف اللي ينرسل للذكاء الاصطناعي (يتكتب تلقائياً)</summary><pre>${esc(prompt)}</pre></details></div>`;
   return h;
 }
 function renderStep(){
   const k=STEPS[S.step].k;
-  let h='';
-  if(k==='mode') h=stepMode();
-  if(k==='top') h=head('اختر التيشيرت','القطعة العلوية من منتجات المتجر. اضغط على اللون وتتغير مباشرة على المرآة.')+productGrid('top');
-  if(k==='bottom') h=head('اختر البنطلون','جرّب أكثر من بنطلون مع نفس التيشيرت وشوف أيهم أحلى.')+productGrid('bottom');
-  if(k==='shoes') h=head('تبي تضيف جزمة؟','اختيارية. الإطلالة الكاملة لها خصم ١٠٪.')+productGrid('shoes');
-  if(k==='acc') h=head('إضافات','كاب، نظارة، ساعة أو شنطة. تقدر تختار أكثر من قطعة.')+productGrid('acc');
-  if(k==='look') h=stepLook();
-  $('#stepBody').innerHTML=h;
-  renderSteps();
-  const last=S.step===STEPS.length-1;
+  const map={mode:stepMode,
+    top:()=>head('اختر التيشيرت','القطعة العلوية من منتجات المتجر.')+productGrid('top'),
+    bottom:()=>head('اختر البنطلون','جرّب البنطلون اللي يمشي مع قطعتك.')+productGrid('bottom'),
+    shoes:()=>head('تبي تضيف جزمة؟','اختيارية. الإطلالة الكاملة لها خصم ١٠٪.')+productGrid('shoes'),
+    acc:()=>head('إضافات','كاب أو أي إكسسوار. تقدر تختار أكثر من قطعة.')+productGrid('acc'),
+    look:stepLook};
+  $('#stepBody').innerHTML=map[k]();
+  $('#steps').innerHTML=STEPS.map((s,i)=>`<li class="${i<S.step?'done':''} ${i===S.step?'cur':''}"><button data-go="${i}" ${canEnter(i)?'':'disabled'} aria-current="${i===S.step?'step':'false'}"><span class="bar"></span>${s.t}</button></li>`).join('');
   $('#backBtn').disabled=S.step===0;
-  $('#nextBtn').hidden=last;
+  $('#nextBtn').hidden=k==='look';
   $('#skipBtn').hidden=!(k==='shoes'||k==='acc');
   let hint='';
-  if(k==='top'&&!S.sel.top) hint='اختر تيشيرت عشان تكمل';
-  if(k==='bottom'&&!S.sel.bottom) hint='اختر بنطلون عشان تكمل';
-  if(k==='mode'&&S.mode==='photo'&&!S.photo) hint='ارفع صورتك أو كمّل بالشخص الافتراضي';
+  if(k==='mode'&&S.mode==='self'&&!S.photo)hint='ارفع صورتك عشان تكمل';
+  if(k==='top'&&!S.sel.top)hint='اختر قطعة علوية عشان تكمل';
+  if(k==='bottom'&&!S.sel.bottom)hint='اختر بنطلون عشان تكمل';
   $('#hint').textContent=hint;
-  $('#nextBtn').disabled=(k==='top'&&!S.sel.top)||(k==='bottom'&&!S.sel.bottom);
+  $('#nextBtn').disabled=!!hint;
   $('#nextBtn').textContent=S.step===STEPS.length-2?'شوف الإطلالة':'التالي';
+  renderSide();
 }
-function go(i){if(i<0||i>=STEPS.length||!canEnter(i))return;S.step=i;renderStep();if(window.innerWidth<=860)$('#stepBody').scrollIntoView({behavior:'smooth',block:'start'})}
+function go(i){if(i<0||i>=STEPS.length||!canEnter(i))return;S.step=i;renderStep()}
+
+/* ---------- generation ---------- */
+const STATUS=['نجهّز الصور...','نرسل الصور للذكاء الاصطناعي...','نلبّس القطع على الشخص...','نضبط القماش والإضاءة...','نولّد الزاوية الجانبية...','باقي شوي...'];
+let statusT;
+async function generate(){
+  const items=chosen();
+  clearInterval(statusT);
+  S.gen={state:'loading'};renderStep();
+  let n=0;statusT=setInterval(()=>{n=Math.min(n+1,STATUS.length-1);const el=$('#genStatus');if(el)el.textContent=STATUS[n]},S.live?9000:500);
+  try{
+    if(!S.live){
+      await new Promise(r=>setTimeout(r,2600));
+      const d=DEMO[S.mode],m=d.match,ok=m.top===S.sel.top&&m.bottom===S.sel.bottom&&(!m.model||m.model===S.modelId)&&(S.mode!=='self'||S.selfDemo);
+      S.gen=ok?{state:'done',images:d.imgs,example:S.mode==='self'?'هذي نتيجة حقيقية لعميل رفع صورته بنفس الطريقة. على الموقع الحي تطلع صورتك أنت.':'هذي النتيجة تولدت مسبقاً بنفس الطريقة وبنفس المنتجات. على الموقع الحي كل تنسيق يتولد لحظياً.'}:{state:'miss'};
+    } else {
+      const r=await fetch('api/tryon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:S.mode,modelId:S.modelId,personImage:S.mode==='self'?S.photo:undefined,items:items.map(p=>p.id),views:['front','side']})});
+      const j=await r.json().catch(()=>({error:'رد غير متوقع من السيرفر'}));
+      S.gen=r.ok?{state:'done',images:j.images,prompt:j.prompt}:{state:'error',msg:j.error||'صار خطأ'};
+    }
+  }catch(e){S.gen={state:'error',msg:'تعذر الاتصال بالسيرفر. تأكد من اتصالك وجرّب مرة ثانية.'}}
+  clearInterval(statusT);
+  if(STEPS[S.step].k==='look')renderStep();
+}
 
 /* ---------- events ---------- */
-let toastT;
-function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400)}
-
 $('#backBtn').onclick=()=>go(S.step-1);
 $('#nextBtn').onclick=()=>go(S.step+1);
-$('#skipBtn').onclick=()=>{const k=STEPS[S.step].k;if(k==='shoes')S.sel.shoes=null;if(k==='acc')S.sel.acc={};renderMirror();go(S.step+1)};
+$('#skipBtn').onclick=()=>{const k=STEPS[S.step].k;if(k==='shoes')S.sel.shoes=null;if(k==='acc')S.sel.acc=[];S.gen=null;go(S.step+1)};
 $('#steps').onclick=e=>{const b=e.target.closest('[data-go]');if(b)go(+b.dataset.go)};
-
 $('#stepBody').addEventListener('click',e=>{
-  const t=e.target.closest('button');if(!t)return;
-  const d=t.dataset;
-  if(d.mode){S.mode=d.mode;renderStep();renderMirror();return}
-  if(d.pk){S.photoKind=d.pk;renderStep();renderMirror();return}
-  if(d.g){S.gender=d.g;renderStep();renderMirror();return}
-  if(d.skin){S.skin=+d.skin;renderStep();renderMirror();return}
-  if(d.none){S.sel.shoes=null;renderStep();renderMirror();return}
-  if(d.pick){
-    const p=byId(d.pick);const hasC=d.c!==undefined;
-    if(p.cat==='acc'){
-      if(hasC) S.sel.acc[p.id]=+d.c;
-      else if(p.id in S.sel.acc) delete S.sel.acc[p.id];
-      else S.sel.acc[p.id]=0;
-    } else {
-      const cur=S.sel[p.cat];
-      S.sel[p.cat]={id:p.id,c:hasC?+d.c:(cur&&cur.id===p.id?cur.c:0)};
-    }
-    renderStep();renderMirror();return;
-  }
+  const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+  if(d.mode){S.mode=d.mode;S.gen=null;renderStep();return}
+  if(d.model){S.modelId=d.model;S.gen=null;renderStep();return}
+  if(d.pick){const p=P(d.pick);
+    if(p.cat==='acc'){const i=S.sel.acc.indexOf(p.id);i<0?S.sel.acc.push(p.id):S.sel.acc.splice(i,1)}
+    else S.sel[p.cat]=S.sel[p.cat]===p.id&&p.cat==='shoes'?null:p.id;
+    S.gen=null;renderStep();return}
+  if(t.id==='genBtn'){generate();return}
+  if(t.id==='tryDemo'){S.sel={top:'r9',bottom:'r8',shoes:null,acc:[]};if(S.mode==='virtual')S.modelId='m1';generate();return}
   if(t.id==='addCart'){toast('انضافت الإطلالة للسلة (تجربة)');return}
-  if(t.id==='saveLook'){
-    if(S.saved.length>=6){toast('وصلت لحد ٦ إطلالات محفوظة');return}
-    const snap=JSON.parse(JSON.stringify({mode:S.mode,photoKind:S.photoKind,gender:S.gender,skin:S.skin,height:S.height,weight:S.weight,shoe:S.shoe,face:S.face,body:S.body,sel:S.sel}));
-    snap.photo=S.photo;snap.total=allSelected().reduce((a,{p})=>a+p.price,0);
-    S.saved.push(snap);renderStep();toast('انحفظت الإطلالة');return;
-  }
-  if(t.id==='restart'){S.sel={top:null,bottom:null,shoes:null,acc:{}};renderMirror();go(1);return}
-  if(d.load){const s=S.saved[+d.load];Object.assign(S,JSON.parse(JSON.stringify({...s,photo:null})));S.photo=s.photo;renderStep();renderMirror();toast('رجعت الإطلالة على المرآة')}
+  if(t.id==='restart'){S.sel={top:null,bottom:null,shoes:null,acc:[]};S.gen=null;go(1)}
 });
 $('#stepBody').addEventListener('input',e=>{
-  const t=e.target,v=+t.value;
-  if(t.id==='hIn'){S.height=v;$('#hInV').textContent=v+' سم'}
-  else if(t.id==='wIn'){S.weight=v;$('#wInV').textContent=v+' كجم'}
-  else if(t.id==='fz')S.face.z=v; else if(t.id==='fx')S.face.x=v; else if(t.id==='fy')S.face.y=v;
-  else if(t.id==='bs')S.body.s=v; else if(t.id==='bx')S.body.x=v; else if(t.id==='by')S.body.y=v;
-  else if(t.id==='shoeIn')S.shoe=v;
-  else return;
-  const bo=$('#buildOut');if(bo){const i=bodyInfo(S);bo.textContent=i.build+' · مقاس '+i.top}
-  renderMirror();
+  const t=e.target;
+  if(t.id==='hIn'){S.height=+t.value;$('#hInV').textContent=t.value+' سم'}
+  if(t.id==='wIn'){S.weight=+t.value;$('#wInV').textContent=t.value+' كجم'}
 });
+function readImage(file,max,cb){
+  if(!file||!/^image\/(png|jpeg|webp)$/.test(file.type)){toast('الملف لازم يكون صورة PNG أو JPG أو WEBP');return}
+  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
+    const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');
+    c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    cb(c.toDataURL('image/jpeg',.9));
+  };img.onerror=()=>toast('ما قدرنا نقرأ الصورة، جرّب صورة ثانية');img.src=r.result};r.readAsDataURL(file);
+}
 $('#stepBody').addEventListener('change',e=>{
-  if(e.target.id!=='photoIn'||!e.target.files[0])return;
-  const f=e.target.files[0];
-  if(!f.type.startsWith('image/')){toast('الملف لازم يكون صورة');return}
-  const r=new FileReader();
-  r.onload=()=>{
-    const img=new Image();
-    img.onload=()=>{
-      const max=900,k=Math.min(1,max/Math.max(img.width,img.height));
-      const cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);
-      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-      S.photo=cv.toDataURL('image/jpeg',.88);S.face={z:1,x:0,y:0};S.body={x:0,y:0,s:1};
-      renderStep();renderMirror();toast('تم تحميل الصورة');
-    };
-    img.onerror=()=>toast('ما قدرنا نقرأ الصورة، جرّب صورة ثانية');
-    img.src=r.result;
-  };
-  r.readAsDataURL(f);
+  if(e.target.id!=='photoIn')return;
+  readImage(e.target.files[0],1536,url=>{S.photo=url;S.gen=null;renderStep();toast('تم رفع الصورة')});
 });
-
-/* tabs */
 document.querySelector('.tabs').onclick=e=>{
   const b=e.target.closest('[data-tab]');if(!b)return;
   document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));
-  ['try','owner','why'].forEach(k=>$('#view-'+k).hidden=k!==b.dataset.tab);
-  if(b.dataset.tab==='owner')renderCatalog();
+  ['try','owner','how'].forEach(k=>$('#view-'+k).hidden=k!==b.dataset.tab);
 };
 
-/* ---------- owner panel ---------- */
-function fillStyles(){
-  const cat=$('#oCat').value;
-  $('#oStyle').innerHTML=Object.entries(STYLES[cat]).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
-}
+/* ---------- owner ---------- */
 let ownerImg=null;
-function cutout(img){
-  const max=640,k=Math.min(1,max/Math.max(img.width,img.height));
-  const W=Math.round(img.width*k),H=Math.round(img.height*k);
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d');
-  cx.drawImage(img,0,0,W,H);const im=cx.getImageData(0,0,W,H),d=im.data;
-  let r=0,g=0,b=0,n=0;const sample=i=>{r+=d[i];g+=d[i+1];b+=d[i+2];n++};
-  for(let x=0;x<W;x++){sample(x*4);sample(((H-1)*W+x)*4)}for(let y=0;y<H;y++){sample(y*W*4);sample((y*W+W-1)*4)}
-  r/=n;g/=n;b/=n;
-  const dist=i=>Math.hypot(d[i]-r,d[i+1]-g,d[i+2]-b);
-  const seen=new Uint8Array(W*H),stack=[];
-  for(let x=0;x<W;x++){stack.push(x,(H-1)*W+x)}for(let y=0;y<H;y++){stack.push(y*W,y*W+W-1)}
-  while(stack.length){const q=stack.pop();if(seen[q])continue;const i=q*4;const dd=dist(i);if(dd>46)continue;seen[q]=1;
-    d[i+3]=dd<30?0:Math.round((dd-30)/16*255);
-    const x=q%W,y=(q/W)|0;if(x>0)stack.push(q-1);if(x<W-1)stack.push(q+1);if(y>0)stack.push(q-W);if(y<H-1)stack.push(q+W)}
-  cx.putImageData(im,0,0);
-  let x0=W,y0=H,x1=0,y1=0;for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(d[(y*W+x)*4+3]>40){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
-  if(x1<=x0||y1<=y0)return null;
-  const out=document.createElement('canvas');out.width=x1-x0+1;out.height=y1-y0+1;
-  out.getContext('2d').drawImage(cv,x0,y0,out.width,out.height,0,0,out.width,out.height);
-  return {src:out.toDataURL('image/png'),ar:out.width/out.height};
-}
-$('#oImg').onchange=e=>{
-  const f=e.target.files[0];if(!f)return;
-  if(!f.type.startsWith('image/')){toast('الملف لازم يكون صورة');return}
-  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
-    ownerImg=cutout(img);
-    if(!ownerImg){toast('ما قدرنا نفصل القطعة عن الخلفية، جرّب صورة خلفيتها سادة');return}
-    $('#oImgLbl').textContent='تم تجهيز الصورة، الخلفية انشالت';ownerPreview();
-  };img.src=r.result};r.readAsDataURL(f);
-};
-function ownerPreview(){
-  if(ownerImg){$('#ownerPreview').innerHTML=`<img src="${ownerImg.src}" alt="">`;return}
-  const p={cat:$('#oCat').value,style:$('#oStyle').value,colors:[['',$('#oColor').value]]};
-  $('#ownerPreview').innerHTML=thumb(p,0);
-}
+const UP_ICON='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>';
 function renderCatalog(){
-  $('#catalog').innerHTML=Object.keys(CAT_NAMES).map(cat=>{
-    const list=products.filter(p=>p.cat===cat);
-    return `<div class="cat-group"><h4><span>${CAT_NAMES[cat]}</span><span>${list.length.toLocaleString('ar-SA')} منتج</span></h4><div class="cat-list">${list.map(p=>`<div class="cat-row"><div class="pic">${thumb(p,0)}</div><div><b style="font-weight:500;font-size:.9rem">${esc(p.name)}</b>${p.custom?'<span class="new-badge">جديد</span>':''}<div class="muted" style="font-size:.75rem">${p.colors.map(c=>esc(c[0])).join('، ')}</div></div><span class="price">${money(p.price)}</span></div>`).join('')}</div></div>`;
-  }).join('');
+  $('#catalogList').innerHTML=Object.keys(CAT).map(c=>{const list=S.cat.products.filter(p=>p.cat===c);
+    return `<div class="cat-group"><h4><span>${CAT[c]}</span><span>${num(list.length)} منتج</span></h4><div class="cat-list">${list.length?list.map(p=>`<div class="cat-row"><div class="pic"><img src="${esc(p.img)}" alt=""></div><div><b style="font-weight:500;font-size:.9rem">${esc(p.name)}</b>${p.custom?'<span class="new-badge">جديد</span>':''}<div class="muted" style="font-size:.75rem">${esc(p.color)}</div></div><span class="price">${money(p.price)}</span></div>`).join(''):'<span class="muted" style="font-size:.85rem">ما فيه منتجات</span>'}</div></div>`}).join('');
 }
-$('#oCat').onchange=()=>{fillStyles();ownerPreview()};
-$('#oStyle').onchange=ownerPreview;
-$('#oColor').oninput=ownerPreview;
-let cN=0;
-$('#ownerForm').onsubmit=e=>{
+$('#oImg').onchange=e=>readImage(e.target.files[0],1024,url=>{ownerImg=url;$('#oThumb').innerHTML=`<img src="${url}" alt="">`});
+$('#ownerForm').onsubmit=async e=>{
   e.preventDefault();
-  const name=$('#oName').value.trim(),price=Math.round(+$('#oPrice').value),cname=$('#oColorName').value.trim()||'لون المنتج';
-  if(!name){$('#ownerHint').textContent='اكتب اسم المنتج';$('#oName').focus();return}
-  if(!(price>0)){$('#ownerHint').textContent='السعر لازم يكون رقم أكبر من صفر';$('#oPrice').focus();return}
-  $('#ownerHint').textContent='';
-  const cat=$('#oCat').value;
-  products.push({id:'c'+(++cN),cat,style:$('#oStyle').value,name,price,sku:'ANQ-N'+String(cN).padStart(3,'0'),colors:[[cname,$('#oColor').value]],custom:true,...(ownerImg?{img:ownerImg.src,ar:ownerImg.ar,fit:cat==='top'?{ny:.12}:cat==='bottom'?{sx:.85}:{}}:{})});
-  $('#oName').value='';ownerImg=null;$('#oImg').value='';$('#oImgLbl').textContent='صورة المنتج (اختياري)';ownerPreview();
+  const body={cat:$('#oCat').value,name:$('#oName').value.trim(),price:Math.round(+$('#oPrice').value),color:$('#oColor').value.trim(),ai:$('#oAi').value.trim(),image:ownerImg};
+  const hint=m=>{$('#ownerHint').textContent=m};
+  if(!ownerImg)return hint('ارفع صورة المنتج');
+  if(!body.name)return hint('اكتب اسم المنتج');
+  if(!(body.price>0))return hint('السعر لازم يكون رقم أكبر من صفر');
+  hint('');
+  let p;
+  if(S.live){
+    const r=await fetch('api/products',{method:'POST',headers:{'Content-Type':'application/json','X-Owner-Password':$('#oPass').value},body:JSON.stringify(body)}).catch(()=>null);
+    const j=r?await r.json().catch(()=>({})):{error:'تعذر الاتصال بالسيرفر'};
+    if(!r||!r.ok)return hint(j.error||'ما انضاف المنتج');
+    p=j;
+  } else p={id:'l'+Date.now(),cat:body.cat,name:body.name,price:body.price,color:body.color,img:ownerImg,ai:body.ai||body.name,custom:true};
+  S.cat.products.push(p);
+  ownerImg=null;$('#ownerForm').reset();$('#oThumb').innerHTML=UP_ICON;
   renderCatalog();renderStep();
-  toast('انضاف «'+name+'» للكتالوج، وصار يظهر للعميل في خطوة '+{top:'التيشيرت',bottom:'البنطلون',shoes:'الجزمة',acc:'الإضافات'}[cat]);
+  toast('انضاف «'+p.name+'» وصار يظهر للعميل في خطوة '+CAT[p.cat]);
 };
 
-/* init */
-fillStyles();ownerPreview();renderStep();renderMirror();
+/* ---------- boot ---------- */
+async function boot(){
+  try{
+    const h=await fetch('api/health');const j=h.ok?await h.json():null;
+    if(j&&j.ok){S.live=!!j.live;S.cat=await (await fetch('api/catalog')).json()}
+  }catch(e){}
+  if(!S.cat.products.length){try{S.cat=await (await fetch('catalog.json')).json();S.cat.models.forEach(m=>{m.img=m.img||m.demoImg||null})}catch(e){toast('ما قدرنا نحمّل الكتالوج')}}
+  const pill=$('#modePill');pill.classList.toggle('live',S.live);pill.lastElementChild.textContent=S.live?'التوليد الحي شغال':'وضع العرض';
+  $('#oPassWrap').hidden=!S.live;
+  // The customer-photo example only ships with the private demo build.
+  const t=new Image();t.onload=()=>{S.selfDemo=true;$('#selfFig').hidden=false};t.src='samples/self-front.webp';
+  if(!(model()&&model().img)){const first=S.cat.models.find(m=>m.img);if(first)S.modelId=first.id}
+  renderStep();renderCatalog();
+}
+boot();
 })();
 </script>
