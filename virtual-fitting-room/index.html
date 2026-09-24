@@ -112,7 +112,9 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
 .card.on::after{content:"";position:absolute;top:10px;inset-inline-start:10px;width:22px;height:22px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/14px no-repeat}
 .card-main{border:0;background:none;padding:0;text-align:start;display:flex;flex-direction:column;flex:1}
 .card .pic{background:var(--surface-2);aspect-ratio:1/1;display:grid;place-items:center;padding:12px;max-width:100%}
+.card .pic{position:relative;overflow:hidden}
 .card .pic svg{width:100%;height:100%}
+.card .pic img{position:absolute;top:12px;left:12px;width:calc(100% - 24px);height:calc(100% - 24px);object-fit:contain}
 .card .meta{padding:10px 12px 4px;display:grid;gap:2px}
 .card .name{font-weight:500;font-size:.92rem;line-height:1.35}
 .card .sku{font-size:.72rem;color:var(--muted);letter-spacing:.04em;direction:ltr;text-align:end}
@@ -142,7 +144,7 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
 .look{display:grid;gap:10px}
 .line-item{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding-block:8px;border-bottom:1px solid var(--line)}
 .line-item .pic{width:52px;height:52px;border-radius:12px;background:var(--surface-2);padding:6px}
-.line-item .pic svg{width:100%;height:100%}
+.line-item .pic svg,.line-item .pic img{width:100%;height:100%;object-fit:contain}
 .line-item small{color:var(--muted);display:block}
 .totals{display:grid;gap:4px;margin-top:6px}
 .totals div{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
@@ -162,14 +164,14 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
 .owner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
 .owner form{display:grid;gap:14px}
 .preview-thumb{background:var(--surface-2);border-radius:16px;aspect-ratio:1/1;max-width:220px;padding:18px;margin-inline:auto;width:100%}
-.preview-thumb svg{width:100%;height:100%}
+.preview-thumb svg,.preview-thumb img{width:100%;height:100%;object-fit:contain}
 .catalog h3{font-size:1.05rem;margin-bottom:10px}
 .cat-group{margin-bottom:16px}
 .cat-group h4{margin:0 0 8px;font-size:.85rem;color:var(--muted);font-weight:500;display:flex;justify-content:space-between}
 .cat-list{display:grid;gap:6px}
 .cat-row{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:6px 10px 6px 6px}
 .cat-row .pic{width:40px;height:40px;background:var(--surface);border-radius:9px;padding:4px}
-.cat-row .pic svg{width:100%;height:100%}
+.cat-row .pic svg,.cat-row .pic img{width:100%;height:100%;object-fit:contain}
 .new-badge{font-size:.7rem;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:1px 8px;margin-inline-start:6px}
 
 /* benefits */
@@ -208,7 +210,7 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
       </div>
       <div>
         <h1>غرفة القياس الافتراضية</h1>
-        <p>نسخة تجريبية لمتجر «أناقة» للملابس</p>
+        <p>نسخة تجريبية لمتجر «أناقة» للملابس بصور منتجات حقيقية</p>
       </div>
     </div>
     <nav class="tabs" role="tablist" aria-label="أقسام الصفحة">
@@ -234,7 +236,7 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
     </div>
     <aside class="mirror-col" aria-label="المرآة">
       <div class="mirror">
-        <svg class="fig" id="fig" viewBox="22 8 256 578" role="img" aria-label="معاينة الإطلالة"></svg>
+        <svg class="fig" id="fig" viewBox="22 -8 256 594" role="img" aria-label="معاينة الإطلالة"></svg>
         <span class="mirror-label" id="mirrorLabel">شخص افتراضي</span>
       </div>
       <div class="wearing">
@@ -262,6 +264,9 @@ select,input[type=text],input[type=number]{background:var(--surface-2);border:1p
           </div>
           <div class="field"><label for="oStyle">الموديل</label><select id="oStyle"></select></div>
         </div>
+        <label class="upload" for="oImg"><span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg></span>
+          <span><b id="oImgLbl">صورة المنتج (اختياري)</b><span>صورة القطعة على خلفية سادة، والخلفية تنشال تلقائياً. بدون صورة يطلع رسم بالموديل واللون.</span></span>
+          <input type="file" id="oImg" accept="image/*"></label>
         <div class="field"><label for="oName">اسم المنتج</label><input type="text" id="oName" placeholder="مثال: تيشيرت لينن صيفي" maxlength="40"></div>
         <div class="row2">
           <div class="field"><label for="oPrice">السعر (ر.س)</label><input type="number" id="oPrice" min="1" step="1" value="129"></div>
@@ -318,19 +323,18 @@ const STYLES={
 };
 const CAT_NAMES={top:'القطع العلوية',bottom:'البناطيل',shoes:'الجزم',acc:'الإكسسوارات'};
 let products=[
-  {id:'t1',cat:'top',style:'tee',name:'تيشيرت قطن أساسي',price:79,sku:'ANQ-T101',colors:[['أبيض','#F7F7F4'],['كحلي','#1F2A44'],['عنابي','#7A1F2B'],['زيتي','#56603A']]},
-  {id:'t2',cat:'top',style:'oversize',name:'تيشيرت أوفرسايز ثقيل',price:119,sku:'ANQ-T144',colors:[['أسود','#1B1B1D'],['بيج','#D8C7A8'],['رمادي','#8C9196']]},
-  {id:'t3',cat:'top',style:'polo',name:'بولو بيكيه كلاسيك',price:149,sku:'ANQ-P210',colors:[['أخضر غامق','#1E4D3A'],['أبيض','#F4F4F0'],['سماوي','#8DB6D6']]},
-  {id:'t4',cat:'top',style:'hoodie',name:'هودي قطن مبطّن',price:189,sku:'ANQ-H330',colors:[['رمادي فاتح','#B9BDC2'],['كحلي','#23304F'],['خردلي','#C29A2E']]},
-  {id:'t5',cat:'top',style:'shirt',name:'قميص أكسفورد',price:169,sku:'ANQ-S402',colors:[['أزرق فاتح','#A9C3E0'],['أبيض','#F6F6F2'],['وردي باهت','#E3BFC0']]},
-  {id:'b1',cat:'bottom',style:'jeans',name:'جينز سليم فِت',price:199,sku:'ANQ-J510',colors:[['أزرق متوسط','#3E5C86'],['أزرق غامق','#22324F'],['أسود','#222326']]},
-  {id:'b2',cat:'bottom',style:'chino',name:'بنطلون تشينو قطن',price:179,sku:'ANQ-C522',colors:[['بيج','#C7B28C'],['كحلي','#26324A'],['زيتي','#5A5E3E']]},
-  {id:'b3',cat:'bottom',style:'jogger',name:'بنطلون رياضي جوجر',price:139,sku:'ANQ-R540',colors:[['أسود','#1F2023'],['رمادي','#7E848B']]},
-  {id:'b4',cat:'bottom',style:'shorts',name:'شورت صيفي',price:99,sku:'ANQ-SH61',colors:[['بيج','#CDB994'],['كحلي','#27324C'],['زيتي','#5E6441']]},
+  {id:'r4',cat:'top',style:'tee',name:'تيشيرت أوفرسايز مطبوع',price:149,sku:'ANQ-T401',img:'products/p4.webp',ar:.93,fit:{ny:.12},colors:[['أسود','#1B1B1D']]},
+  {id:'r9',cat:'top',style:'tee',name:'تيشيرت أوفرسايز سادة',price:119,sku:'ANQ-T409',img:'products/p9.webp',ar:.953,fit:{ny:.1},colors:[['نعناعي','#8FE3CF']]},
+  {id:'r5',cat:'top',style:'hoodie',name:'هودي مطبوع «Soulmates»',price:229,sku:'ANQ-H405',img:'products/p5.webp',ar:.784,fit:{ny:.34,hem:322,sx:.76},colors:[['أسود','#1C1C1E']]},
+  {id:'r6',cat:'top',style:'shirt',name:'قميص كاروهات نص كم',price:179,sku:'ANQ-S406',img:'products/p6.webp',ar:1.098,fit:{ny:.05,hem:318,sx:.9,under:true},colors:[['كحلي','#27315A']]},
+  {id:'r7',cat:'top',style:'tee',name:'تيشيرت كورة مخطط',price:199,sku:'ANQ-F407',img:'products/p7.webp',ar:.673,fit:{ny:.06,hem:314,sx:1.05},colors:[['عنابي وأزرق','#7A1E45']]},
+  {id:'r3',cat:'bottom',style:'jogger',name:'بنطلون نايلون رياضي',price:169,sku:'ANQ-R403',img:'products/p3.webp',ar:.6,fit:{sx:.8},colors:[['أسود ورمادي','#2A2B2E']]},
+  {id:'r8',cat:'bottom',style:'jeans',name:'جينز واسع مغسول',price:209,sku:'ANQ-J408',img:'products/p8.webp',ar:.447,fit:{sx:1.05},colors:[['رمادي','#6D6E70']]},
   {id:'s1',cat:'shoes',style:'sneaker',name:'سنيكرز جلد',price:249,sku:'ANQ-K701',colors:[['أبيض','#F5F5F2'],['أسود','#1D1D1F']]},
   {id:'s2',cat:'shoes',style:'boot',name:'بوت شامواه',price:399,sku:'ANQ-B720',colors:[['بني','#6E4A2E'],['رملي','#B08E62']]},
   {id:'s3',cat:'shoes',style:'loafer',name:'لوفر جلد طبيعي',price:289,sku:'ANQ-L733',colors:[['بني غامق','#4A2F20'],['أسود','#1C1B1B']]},
-  {id:'a1',cat:'acc',style:'cap',name:'كاب قطن مطرّز',price:69,sku:'ANQ-A801',colors:[['أسود','#1E1E20'],['بيج','#D2BF9C'],['كحلي','#25304A']]},
+  {id:'r1',cat:'acc',style:'cap',name:'كاب شبك مطبوع',price:89,sku:'ANQ-A401',img:'products/p1.webp',ar:1.37,fit:{w:98,bottom:66},colors:[['بيج','#DCD6C4']]},
+  {id:'r2',cat:'acc',style:'cap',name:'كاب فنتج مغسول',price:79,sku:'ANQ-A402',img:'products/p2.webp',ar:1.455,fit:{w:102,bottom:68,dx:4},colors:[['كحلي وعنابي','#3F4A66']]},
   {id:'a2',cat:'acc',style:'glasses',name:'نظارة شمسية',price:129,sku:'ANQ-A812',colors:[['أسود','#18181A'],['بني','#5B3A23']]},
   {id:'a3',cat:'acc',style:'watch',name:'ساعة يد كلاسيك',price:349,sku:'ANQ-A825',colors:[['فضي','#D9DCE0'],['ذهبي','#D2AE5E']]},
   {id:'a4',cat:'acc',style:'bag',name:'شنطة كروس جلد',price:219,sku:'ANQ-A840',colors:[['بني','#7A4D2C'],['أسود','#1D1D1F']]}
@@ -421,6 +425,16 @@ function bodyInfo(st){
   const build=['نحيفة','متوسطة','رياضية','ممتلئة','ممتلئة جداً'][idx];
   return {bmi,scale,top,waist,build};
 }
+function imgLayer(p){
+  const f=p.fit||{};let x,y,w,h;
+  if(p.cat==='top'){const hem=f.hem||306;h=(hem-121)/(1-(f.ny||0));w=h*p.ar*(f.sx||1);x=150-w/2;y=121-(f.ny||0)*h}
+  else if(p.cat==='bottom'){h=(f.y1||550)-287;w=h*p.ar*(f.sx||1);x=150-w/2;y=287}
+  else if(p.cat==='shoes'){w=f.w||112;h=w/p.ar;x=150-w/2;y=(f.bottom||568)-h}
+  else {const D={cap:{w:92,bottom:66,dx:0},glasses:{w:60,bottom:82,dx:0},watch:{w:24,bottom:308,dx:-73},bag:{w:56,bottom:314,dx:-34}}[p.style]||{w:90,bottom:66,dx:0};
+    w=f.w||D.w;h=w/p.ar;x=150-w/2+(f.dx!=null?f.dx:D.dx);y=(f.bottom||D.bottom)-h}
+  return `<image href="${p.img}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="none"/>`;
+}
+function piece(sel,sk){const p=byId(sel.id);if(p.img)return imgLayer(p);const c=colorOf(sel)[1];return p.cat==='top'?drawTop(p.style,c,sk):p.cat==='bottom'?drawBottom(p.style,c):p.cat==='shoes'?drawShoes(p.style,c):drawAcc(p.style,c)}
 function colorOf(sel){const p=byId(sel.id);return p.colors[sel.c]||p.colors[0]}
 
 /* full figure */
@@ -431,16 +445,17 @@ function figure(st){
   const faceImg=st.mode==='photo'&&st.photoKind==='face'&&st.photo;
   const sk=photoBody?null:skin;
   const sel=st.sel;
-  const top=sel.top?drawTop(byId(sel.top.id).style,colorOf(sel.top)[1],sk):drawTop('tee','#D3D7DC',sk);
-  const bottom=sel.bottom?drawBottom(byId(sel.bottom.id).style,colorOf(sel.bottom)[1]):drawBottom('shorts','#B7BDC4');
+  const top=sel.top?piece(sel.top,sk):drawTop('tee','#D3D7DC',sk);
+  const bottom=sel.bottom?piece(sel.bottom):drawBottom('shorts','#B7BDC4');
   const shoes=sel.shoes?drawShoes(byId(sel.shoes.id).style,colorOf(sel.shoes)[1]):'';
-  const acc=k=>Object.keys(sel.acc).filter(id=>byId(id)&&byId(id).style===k).map(id=>drawAcc(k,byId(id).colors[sel.acc[id]][1])).join('');
+  const acc=k=>Object.keys(sel.acc).filter(id=>byId(id)&&byId(id).style===k).map(id=>piece({id,c:sel.acc[id]})).join('');
+  const tuck=sel.top&&byId(sel.top.id).fit&&byId(sel.top.id).fit.under;
   const floor=`<ellipse class="floor" cx="150" cy="566" rx="86" ry="10"/>`;
 
   if(photoBody){
     const b=st.body;
-    return `<defs><clipPath id="${u}c"><rect x="22" y="8" width="256" height="578"/></clipPath></defs>
-      <image href="${st.photo}" x="22" y="8" width="256" height="578" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u}c)"/>
+    return `<defs><clipPath id="${u}c"><rect x="22" y="-8" width="256" height="594"/></clipPath></defs>
+      <image href="${st.photo}" x="22" y="-8" width="256" height="594" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u}c)"/>
       <g transform="translate(${b.x} ${b.y}) translate(150 320) scale(${b.s}) translate(-150 -320)" opacity=".97">${bottom}${shoes}${top}${acc('watch')}${acc('bag')}${acc('cap')}${acc('glasses')}</g>`;
   }
   const info=bodyInfo(st);
@@ -450,20 +465,21 @@ function figure(st){
   const body=`
     ${both(`<path d="M132 300 L128 550" stroke="${skin}" stroke-width="31" stroke-linecap="round"/>`)}
     ${both(`<path d="M100 140 L84 228 L76 312" fill="none" stroke="${skin}" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>`)}
-    ${bare}`;
+    ${bare}
+    <rect x="138" y="96" width="24" height="34" fill="${skin}"/>
+    <path d="M110 124 Q150 118 190 124 L198 186 Q194 250 194 304 L106 304 Q106 250 102 186 Z" fill="${shade(skin,-.06)}"/>`;
   const hands=both(`<circle cx="76" cy="317" r="11" fill="${skin}"/>`);
   let head;
   if(faceImg){
     const f=st.face, sz=96*f.z;
     head=`<defs><clipPath id="${u}f"><ellipse cx="150" cy="70" rx="33" ry="41"/></clipPath></defs>
-      <rect x="138" y="96" width="24" height="36" fill="${skin}"/>
       <g clip-path="url(#${u}f)"><rect x="110" y="25" width="80" height="90" fill="${skin}"/><image href="${st.photo}" x="${150-sz/2+f.x}" y="${70-sz/2+f.y}" width="${sz}" height="${sz}" preserveAspectRatio="xMidYMid slice"/></g>
       <ellipse cx="150" cy="70" rx="33" ry="41" fill="none" stroke="${shade(skin,-.25)}" stroke-width="1.5"/>`;
   } else {
     const fh=st.gender==='f'
       ?`<path d="M118 62 Q118 28 150 28 Q183 28 184 64 Q172 44 146 46 Q128 48 118 62 Z" fill="${hairC}"/>`
       :`<path d="M118 66 Q113 27 150 27 Q187 27 182 66 Q178 45 150 43 Q123 45 118 66 Z" fill="${hairC}"/>`;
-    head=`<rect x="138" y="96" width="24" height="36" fill="${skin}"/>
+    head=`
       ${both(`<ellipse cx="120" cy="74" rx="5" ry="8" fill="${shade(skin,-.08)}"/>`)}
       <ellipse cx="150" cy="72" rx="31" ry="37" fill="${skin}"/>
       ${both(`<circle cx="139" cy="73" r="2.6" fill="#2B2320"/><path d="M133 64 Q139 61 145 64" stroke="${hairC}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`)}
@@ -473,7 +489,7 @@ function figure(st){
   }
   const g=`translate(150 0) scale(${info.scale} 1) translate(-150 0)`;
   return `${floor}${backHair}
-    <g transform="${g}">${body}${bottom}${shoes}${top}${hands}${acc('watch')}${acc('bag')}</g>
+    <g transform="${g}">${body}${tuck?top+bottom+shoes:bottom+shoes+top}${hands}${acc('watch')}${acc('bag')}</g>
     ${head}${acc('cap')}${acc('glasses')}`;
 }
 
@@ -483,6 +499,7 @@ const VB={
   cap:'104 14 92 58', glasses:'114 56 72 28', watch:'58 284 38 30', bag:'84 124 118 192'
 };
 function thumb(p,ci){
+  if(p.img) return `<img src="${p.img}" alt="" loading="lazy">`;
   const c=p.colors[ci||0][1];
   let inner='',vb;
   if(p.cat==='top'){inner=drawTop(p.style,c,null);vb=VB.top}
@@ -533,7 +550,7 @@ function productGrid(cat){
         <div class="pic">${thumb(p,ci)}</div>
         <div class="meta"><span class="name">${esc(p.name)}${p.custom?'<span class="new-badge">جديد</span>':''}</span><span class="price">${money(p.price)}</span></div>
       </button>
-      <div class="swatches">${p.colors.map((col,i)=>`<button class="sw" style="background:${col[1]}" data-pick="${p.id}" data-c="${i}" aria-pressed="${on&&ci===i}" aria-label="${esc(col[0])}" title="${esc(col[0])}"></button>`).join('')}</div>
+      <div class="swatches">${p.colors.length<2?`<span class="muted" style="font-size:.78rem">${esc(p.colors[0][0])}</span>`:p.colors.map((col,i)=>`<button class="sw" style="background:${col[1]}" data-pick="${p.id}" data-c="${i}" aria-pressed="${on&&ci===i}" aria-label="${esc(col[0])}" title="${esc(col[0])}"></button>`).join('')}</div>
     </div>`;
   });
   return html+'</div>';
@@ -580,7 +597,7 @@ function stepLook(){
     <div class="grand"><span>الإجمالي</span><span class="price">${money(sub-disc)}</span></div></div>
     <div class="fitbox"><b>المقاس المقترح لك</b><div class="sizes"><span class="size">التيشيرت <b>${info.top}</b></span><span class="size">البنطلون <b>${info.waist}</b></span><span class="size">الجزمة <b>${S.shoe}</b></span></div><span class="muted" style="font-size:.82rem">محسوب من الطول ${S.height} سم والوزن ${S.weight} كجم. تقدر تعدّلها من الخطوة الأولى.</span></div>
     <div class="actions"><button class="btn primary" id="addCart">أضف الإطلالة للسلة</button><button class="btn" id="saveLook">احفظ للمقارنة</button><button class="btn ghost" id="restart">إطلالة جديدة</button></div>
-    ${S.saved.length?`<div><b style="font-size:.9rem">إطلالاتك المحفوظة</b><div class="saved">${S.saved.map((s,i)=>`<button data-load="${i}"><svg viewBox="22 8 256 578">${figure(s)}</svg>${s.total.toLocaleString('ar-SA')} ر.س</button>`).join('')}</div></div>`:''}
+    ${S.saved.length?`<div><b style="font-size:.9rem">إطلالاتك المحفوظة</b><div class="saved">${S.saved.map((s,i)=>`<button data-load="${i}"><svg viewBox="22 -8 256 594">${figure(s)}</svg>${s.total.toLocaleString('ar-SA')} ر.س</button>`).join('')}</div></div>`:''}
   </div>`;
   return h;
 }
@@ -692,7 +709,39 @@ function fillStyles(){
   const cat=$('#oCat').value;
   $('#oStyle').innerHTML=Object.entries(STYLES[cat]).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
 }
+let ownerImg=null;
+function cutout(img){
+  const max=640,k=Math.min(1,max/Math.max(img.width,img.height));
+  const W=Math.round(img.width*k),H=Math.round(img.height*k);
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d');
+  cx.drawImage(img,0,0,W,H);const im=cx.getImageData(0,0,W,H),d=im.data;
+  let r=0,g=0,b=0,n=0;const sample=i=>{r+=d[i];g+=d[i+1];b+=d[i+2];n++};
+  for(let x=0;x<W;x++){sample(x*4);sample(((H-1)*W+x)*4)}for(let y=0;y<H;y++){sample(y*W*4);sample((y*W+W-1)*4)}
+  r/=n;g/=n;b/=n;
+  const dist=i=>Math.hypot(d[i]-r,d[i+1]-g,d[i+2]-b);
+  const seen=new Uint8Array(W*H),stack=[];
+  for(let x=0;x<W;x++){stack.push(x,(H-1)*W+x)}for(let y=0;y<H;y++){stack.push(y*W,y*W+W-1)}
+  while(stack.length){const q=stack.pop();if(seen[q])continue;const i=q*4;const dd=dist(i);if(dd>46)continue;seen[q]=1;
+    d[i+3]=dd<30?0:Math.round((dd-30)/16*255);
+    const x=q%W,y=(q/W)|0;if(x>0)stack.push(q-1);if(x<W-1)stack.push(q+1);if(y>0)stack.push(q-W);if(y<H-1)stack.push(q+W)}
+  cx.putImageData(im,0,0);
+  let x0=W,y0=H,x1=0,y1=0;for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(d[(y*W+x)*4+3]>40){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  if(x1<=x0||y1<=y0)return null;
+  const out=document.createElement('canvas');out.width=x1-x0+1;out.height=y1-y0+1;
+  out.getContext('2d').drawImage(cv,x0,y0,out.width,out.height,0,0,out.width,out.height);
+  return {src:out.toDataURL('image/png'),ar:out.width/out.height};
+}
+$('#oImg').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(!f.type.startsWith('image/')){toast('الملف لازم يكون صورة');return}
+  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
+    ownerImg=cutout(img);
+    if(!ownerImg){toast('ما قدرنا نفصل القطعة عن الخلفية، جرّب صورة خلفيتها سادة');return}
+    $('#oImgLbl').textContent='تم تجهيز الصورة، الخلفية انشالت';ownerPreview();
+  };img.src=r.result};r.readAsDataURL(f);
+};
 function ownerPreview(){
+  if(ownerImg){$('#ownerPreview').innerHTML=`<img src="${ownerImg.src}" alt="">`;return}
   const p={cat:$('#oCat').value,style:$('#oStyle').value,colors:[['',$('#oColor').value]]};
   $('#ownerPreview').innerHTML=thumb(p,0);
 }
@@ -713,8 +762,8 @@ $('#ownerForm').onsubmit=e=>{
   if(!(price>0)){$('#ownerHint').textContent='السعر لازم يكون رقم أكبر من صفر';$('#oPrice').focus();return}
   $('#ownerHint').textContent='';
   const cat=$('#oCat').value;
-  products.push({id:'c'+(++cN),cat,style:$('#oStyle').value,name,price,sku:'ANQ-N'+String(cN).padStart(3,'0'),colors:[[cname,$('#oColor').value]],custom:true});
-  $('#oName').value='';
+  products.push({id:'c'+(++cN),cat,style:$('#oStyle').value,name,price,sku:'ANQ-N'+String(cN).padStart(3,'0'),colors:[[cname,$('#oColor').value]],custom:true,...(ownerImg?{img:ownerImg.src,ar:ownerImg.ar,fit:cat==='top'?{ny:.12}:cat==='bottom'?{sx:.85}:{}}:{})});
+  $('#oName').value='';ownerImg=null;$('#oImg').value='';$('#oImgLbl').textContent='صورة المنتج (اختياري)';ownerPreview();
   renderCatalog();renderStep();
   toast('انضاف «'+name+'» للكتالوج، وصار يظهر للعميل في خطوة '+{top:'التيشيرت',bottom:'البنطلون',shoes:'الجزمة',acc:'الإضافات'}[cat]);
 };
