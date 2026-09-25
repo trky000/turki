@@ -117,6 +117,8 @@ async function geminiImage(prompt, images) {
     const msg = (j.error && j.error.message) || '';
     // Older image models don't take imageSize; drop it once and remember.
     if (r.status === 400 && withSize && /image_?size/i.test(msg)) { withSize = false; g.resolution = ''; console.warn('[gemini] imageSize not supported; continuing without it'); attempt--; continue; }
+    // A free-tier key has zero image quota ("limit: 0"): retrying won't help.
+    if (r.status === 429 && /limit:\s*0\b|free_tier/i.test(msg)) break;
     if (r.status === 429 || r.status >= 500) { await sleep(2000 * (attempt + 1)); continue; }
     break;
   }
@@ -124,6 +126,7 @@ async function geminiImage(prompt, images) {
     const msg = (j.error && j.error.message) || '';
     console.error('[gemini]', r.status, msg);
     if (r.status === 400 && /API key/i.test(msg)) throw httpError(502, 'مفتاح Gemini غير صحيح');
+    if (r.status === 429 && /limit:\s*0\b|free_tier/i.test(msg)) throw httpError(402, 'مفتاح Gemini على الباقة المجانية، وهي ما تشمل توليد الصور. فعّل الفوترة على المشروع في Google AI Studio');
     if (r.status === 429) throw httpError(503, 'خدمة Google مشغولة أو وصلت حد الاستخدام، جرّب بعد شوي');
     throw httpError(502, 'خدمة توليد الصور رجعت خطأ (' + r.status + ')');
   }
