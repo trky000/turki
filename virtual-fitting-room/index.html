@@ -275,8 +275,8 @@ details pre{white-space:pre-wrap;direction:ltr;text-align:left;font-size:.78rem;
 
   <section id="view-how" class="panel info" role="tabpanel" hidden>
     <div>
-      <h2 style="font-size:1.55rem">نفس تقنية شات جي بي تي، داخل متجرك</h2>
-      <p class="lead">الصور تتولد بنموذج توليد وتعديل الصور حق OpenAI، وهو نفس اللي يشتغل داخل ChatGPT. الفرق إن الموقع يرتّب الطلب تلقائياً: العميل يختار بس، والنظام يكتب الوصف ويرسل الصور ويرجع النتيجة.</p>
+      <h2 style="font-size:1.55rem">Nano Banana 2 من Google، داخل متجرك</h2>
+      <p class="lead">الصور تتولد بـ Nano Banana 2 (Gemini 3.1 Flash Image)، نموذج Google لتوليد وتعديل الصور. الموقع يرتّب الطلب تلقائياً: العميل يختار بس، والنظام يكتب الوصف ويرسل الصور ويرجع النتيجة.</p>
     </div>
     <div class="compare">
       <figure><div class="imgs"><img src="samples/virtual-front.webp" alt="موديل افتراضي لابس تيشيرت نعناعي وجينز رمادي من الأمام"><img src="samples/virtual-side.webp" alt="نفس الموديل من زاوية جانبية"></div><figcaption>شخص افتراضي: شخص واقعي بس ما هو موجود في الحقيقة</figcaption></figure>
@@ -287,7 +287,7 @@ details pre{white-space:pre-wrap;direction:ltr;text-align:left;font-size:.78rem;
       <ol class="flow">
         <li><div><b>يجمع الصور</b><span>صورة الشخص (موديل افتراضي أو صورة العميل) وصور القطع اللي اختارها من الكتالوج.</span></div></li>
         <li><div><b>يكتب الوصف تلقائياً</b><span>كل منتج محفوظ معه وصف دقيق للون والقصّة والطباعة، والنظام يركّبها في طلب واحد يطلب الحفاظ على وجه الشخص وتفاصيل كل قطعة.</span></div></li>
-        <li><div><b>يولّد الصورة الأمامية</b><span>يرسل الصور والوصف للنموذج بأعلى دقة، وتاخذ عادة بين ٣٠ و٩٠ ثانية.</span></div></li>
+        <li><div><b>يولّد الصورة الأمامية</b><span>يرسل الصور والوصف لـ Nano Banana 2 بدقة 2K، وتاخذ عادة أقل من دقيقة.</span></div></li>
         <li><div><b>يولّد الزاوية الثانية</b><span>يستخدم الصورة الأولى كمرجع عشان يطلع نفس الشخص ونفس الملابس بوقفة جانبية.</span></div></li>
         <li><div><b>يحفظ نتائج الموديلات</b><span>نفس التنسيق على نفس الموديل الافتراضي ما يتولد مرتين، والعميل الثاني يشوفه فوراً وبدون تكلفة. صور العملاء نفسها ما تنحفظ.</span></div></li>
       </ol>
@@ -397,7 +397,7 @@ function stepLook(){
   if(!g){
     h+=`<div class="shots"><div class="shot"><span class="tag">من الأمام</span></div><div class="shot"><span class="tag">من الجنب</span></div></div>
       <div><button class="btn primary big" id="genBtn">ولّد الإطلالة</button></div>
-      <p class="note">${S.live?'التوليد ياخذ عادة من ٣٠ إلى ٩٠ ثانية.':'وضع العرض: النتائج هنا أمثلة جاهزة تولدت بنفس الطريقة.'}</p>`;
+      <p class="note">${S.live?'التوليد ياخذ عادة أقل من دقيقة للصورتين.':'وضع العرض: النتائج هنا أمثلة جاهزة تولدت بنفس الطريقة.'}</p>`;
   } else if(g.state==='loading'){
     h+=`<div class="shots"><div class="shot loading"><span class="tag">من الأمام</span></div><div class="shot loading"><span class="tag">من الجنب</span></div></div>
       <div class="status"><span class="spin"></span><span id="genStatus">نجهّز الصور...</span></div>`;
@@ -446,7 +446,7 @@ async function generate(){
   const items=chosen();
   clearInterval(statusT);
   S.gen={state:'loading'};renderStep();
-  let n=0;statusT=setInterval(()=>{n=Math.min(n+1,STATUS.length-1);const el=$('#genStatus');if(el)el.textContent=STATUS[n]},S.live?9000:500);
+  let n=0;statusT=setInterval(()=>{n=Math.min(n+1,STATUS.length-1);const el=$('#genStatus');if(el)el.textContent=STATUS[n]},S.live?5000:500);
   try{
     if(!S.live){
       await new Promise(r=>setTimeout(r,2600));

@@ -1,9 +1,10 @@
 // Virtual fitting room server: serves the page and turns (person photo + product photos) into
-// generated try-on photos through the OpenAI Images API. No npm dependencies (Node 18+).
+// generated try-on photos. Default engine: Google Nano Banana 2 (Gemini 3.1 Flash Image) through
+// the Gemini API; OpenAI's Images API is kept as an alternative. No npm dependencies (Node 18+).
 //
-//   OPENAI_API_KEY=sk-... node server.js            -> live generation
+//   GEMINI_API_KEY=... node server.js                -> live generation with Nano Banana 2
 //   node server.js                                   -> demo mode (sample results only)
-//   node server.js --generate-models                 -> create missing virtual model photos
+//   node server.js --generate-models [id]            -> create missing virtual model photos
 'use strict';
 const http = require('http');
 const fs = require('fs');
@@ -14,18 +15,31 @@ const P = require('./prompt.js');
 const ROOT = __dirname;
 loadDotEnv(path.join(ROOT, '.env'));
 
+const env = process.env;
 const CFG = {
-  port: +(process.env.PORT || 3000),
-  key: process.env.OPENAI_API_KEY || '',
-  base: (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, ''),
-  model: process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1',
-  quality: process.env.IMAGE_QUALITY || 'high',
-  size: process.env.IMAGE_SIZE || '1024x1536',
-  fidelity: process.env.INPUT_FIDELITY !== 'off',
-  ownerPassword: process.env.OWNER_PASSWORD || '',
-  ratePerHour: +(process.env.TRYONS_PER_HOUR || 20)
+  port: +(env.PORT || 3000),
+  provider: env.IMAGE_PROVIDER || (env.GEMINI_API_KEY ? 'gemini' : env.OPENAI_API_KEY ? 'openai' : 'none'),
+  gemini: {
+    key: env.GEMINI_API_KEY || '',
+    base: (env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta').replace(/\/$/, ''),
+    model: env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image-preview',
+    aspect: env.IMAGE_ASPECT || '3:4',
+    resolution: env.IMAGE_RESOLUTION || '2K'
+  },
+  openai: {
+    key: env.OPENAI_API_KEY || '',
+    base: (env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, ''),
+    model: env.OPENAI_IMAGE_MODEL || 'gpt-image-1',
+    quality: env.IMAGE_QUALITY || 'high',
+    size: env.IMAGE_SIZE || '1024x1536',
+    fidelity: env.INPUT_FIDELITY !== 'off'
+  },
+  ownerPassword: env.OWNER_PASSWORD || '',
+  ratePerHour: +(env.TRYONS_PER_HOUR || 20)
 };
-const LIVE = !!CFG.key;
+const ENGINE = CFG[CFG.provider];
+const LIVE = !!(ENGINE && ENGINE.key);
+const ENGINE_ID = LIVE ? `${CFG.provider}:${ENGINE.model}:${ENGINE.resolution || ENGINE.quality}:${ENGINE.aspect || ENGINE.size}` : 'none';
 const DATA = path.join(ROOT, 'data');
 for (const d of ['cache', 'models', 'products']) fs.mkdirSync(path.join(DATA, d), { recursive: true });
 
@@ -57,7 +71,8 @@ const MIME = { '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg',
 function readImage(rel) {
   const abs = safeJoin(ROOT, rel);
   if (!abs || !fs.existsSync(abs)) throw httpError(400, 'صورة غير موجودة: ' + rel);
-  return { buf: fs.readFileSync(abs), type: MIME[path.extname(abs).toLowerCase()] || 'image/png', name: path.basename(abs) };
+  const buf = fs.readFileSync(abs);
+  return { buf, type: sniffType(buf), name: path.basename(abs) };
 }
 function fromDataUrl(url, name) {
   const m = /^data:(image\/(png|jpeg|webp));base64,(.+)$/.exec(url || '');
@@ -67,40 +82,96 @@ function fromDataUrl(url, name) {
   return { buf, type: m[1], name: name + '.' + (m[2] === 'jpeg' ? 'jpg' : m[2]) };
 }
 
-async function openaiImage(endpoint, prompt, images) {
-  if (!LIVE) throw httpError(503, 'التوليد يحتاج مفتاح OPENAI_API_KEY على السيرفر');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function sniffType(buf) {
+  if (buf[0] === 0x89 && buf[1] === 0x50) return 'image/png';
+  if (buf[0] === 0xff && buf[1] === 0xd8) return 'image/jpeg';
+  if (buf.slice(8, 12).toString() === 'WEBP') return 'image/webp';
+  return 'image/png';
+}
+const SAFETY_MSG = 'الصورة انرفضت من فلتر الأمان عند مزوّد الذكاء الاصطناعي، جرّب صورة ثانية';
+
+// Returns a Buffer with the generated image. `images` may be empty (text-to-image).
+async function generateImage(prompt, images = []) {
+  if (!LIVE) throw httpError(503, 'التوليد يحتاج مفتاح GEMINI_API_KEY على السيرفر');
+  return CFG.provider === 'gemini' ? geminiImage(prompt, images) : openaiImage(prompt, images);
+}
+
+async function geminiImage(prompt, images) {
+  const g = CFG.gemini;
+  const body = withSize => ({
+    contents: [{ role: 'user', parts: [{ text: prompt }, ...images.map(im => ({ inline_data: { mime_type: im.type, data: im.buf.toString('base64') } }))] }],
+    generationConfig: {
+      responseModalities: ['IMAGE'],
+      imageConfig: withSize ? { aspectRatio: g.aspect, imageSize: g.resolution } : { aspectRatio: g.aspect }
+    }
+  });
+  let withSize = !!g.resolution, r, j;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    r = await fetch(`${g.base}/models/${encodeURIComponent(g.model)}:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': g.key },
+      body: JSON.stringify(body(withSize))
+    });
+    j = await r.json().catch(() => ({}));
+    const msg = (j.error && j.error.message) || '';
+    // Older image models don't take imageSize; drop it once and remember.
+    if (r.status === 400 && withSize && /image_?size/i.test(msg)) { withSize = false; g.resolution = ''; console.warn('[gemini] imageSize not supported; continuing without it'); attempt--; continue; }
+    if (r.status === 429 || r.status >= 500) { await sleep(2000 * (attempt + 1)); continue; }
+    break;
+  }
+  if (!r.ok) {
+    const msg = (j.error && j.error.message) || '';
+    console.error('[gemini]', r.status, msg);
+    if (r.status === 400 && /API key/i.test(msg)) throw httpError(502, 'مفتاح Gemini غير صحيح');
+    if (r.status === 429) throw httpError(503, 'خدمة Google مشغولة أو وصلت حد الاستخدام، جرّب بعد شوي');
+    throw httpError(502, 'خدمة توليد الصور رجعت خطأ (' + r.status + ')');
+  }
+  if (j.promptFeedback && j.promptFeedback.blockReason) { console.warn('[gemini] blocked:', j.promptFeedback.blockReason); throw httpError(422, SAFETY_MSG); }
+  const cand = (j.candidates || [])[0] || {};
+  const parts = (cand.content && cand.content.parts) || [];
+  const img = parts.map(p => p.inlineData || p.inline_data).find(d => d && d.data);
+  if (!img) {
+    const text = parts.map(p => p.text).filter(Boolean).join(' ').slice(0, 300);
+    console.warn('[gemini] no image, finishReason=%s text=%s', cand.finishReason, text);
+    if (/SAFETY|PROHIBITED|BLOCK|RECITATION/i.test(cand.finishReason || '')) throw httpError(422, SAFETY_MSG);
+    throw httpError(502, 'خدمة توليد الصور ما رجعت صورة، جرّب مرة ثانية');
+  }
+  return Buffer.from(img.data, 'base64');
+}
+
+async function openaiImage(prompt, images) {
+  const o = CFG.openai, edits = images.length > 0;
   const send = async (withFidelity) => {
-    let body, headers = { Authorization: 'Bearer ' + CFG.key };
-    if (endpoint === 'edits') {
+    let body, headers = { Authorization: 'Bearer ' + o.key };
+    if (edits) {
       body = new FormData();
-      body.append('model', CFG.model);
+      body.append('model', o.model);
       body.append('prompt', prompt);
-      body.append('size', CFG.size);
-      body.append('quality', CFG.quality);
+      body.append('size', o.size);
+      body.append('quality', o.quality);
       body.append('n', '1');
       if (withFidelity) body.append('input_fidelity', 'high');
       for (const im of images) body.append('image[]', new Blob([im.buf], { type: im.type }), im.name);
     } else {
       headers['Content-Type'] = 'application/json';
-      body = JSON.stringify({ model: CFG.model, prompt, size: CFG.size, quality: CFG.quality, n: 1 });
+      body = JSON.stringify({ model: o.model, prompt, size: o.size, quality: o.quality, n: 1 });
     }
-    const r = await fetch(`${CFG.base}/images/${endpoint}`, { method: 'POST', headers, body });
+    const r = await fetch(`${o.base}/images/${edits ? 'edits' : 'generations'}`, { method: 'POST', headers, body });
     const j = await r.json().catch(() => ({}));
     return { r, j };
   };
-  let { r, j } = await send(endpoint === 'edits' && CFG.fidelity);
-  // Some image models don't accept input_fidelity; retry once without it.
-  if (!r.ok && CFG.fidelity && /input_fidelity/i.test(JSON.stringify(j))) {
-    CFG.fidelity = false;
+  let { r, j } = await send(edits && o.fidelity);
+  // Some image models don't accept input_fidelity; retry once without it and remember.
+  if (!r.ok && o.fidelity && /input_fidelity/i.test(JSON.stringify(j))) {
+    o.fidelity = false;
     console.warn('[openai] input_fidelity not supported by this model; continuing without it');
     ({ r, j } = await send(false));
   }
   if (!r.ok) {
     console.error('[openai]', r.status, j.error && j.error.message);
-    const msg = r.status === 400 && /safety|moderation/i.test(JSON.stringify(j))
-      ? 'الصورة انرفضت من فلتر الأمان، جرّب صورة ثانية'
-      : 'خدمة توليد الصور رجعت خطأ (' + r.status + ')';
-    throw httpError(502, msg);
+    if (r.status === 400 && /safety|moderation/i.test(JSON.stringify(j))) throw httpError(422, SAFETY_MSG);
+    throw httpError(502, 'خدمة توليد الصور رجعت خطأ (' + r.status + ')');
   }
   const item = j.data && j.data[0];
   if (!item || !item.b64_json) throw httpError(502, 'خدمة توليد الصور ما رجعت صورة');
@@ -109,7 +180,7 @@ async function openaiImage(endpoint, prompt, images) {
 
 /* ---------- try-on ---------- */
 function hash(...parts) { const h = crypto.createHash('sha256'); for (const p of parts) h.update(p); return h.digest('hex').slice(0, 32); }
-const toDataUrl = buf => 'data:image/png;base64,' + buf.toString('base64');
+const toDataUrl = buf => `data:${sniffType(buf)};base64,` + buf.toString('base64');
 
 async function tryOn(body) {
   const cat = catalog();
@@ -132,7 +203,7 @@ async function tryOn(body) {
 
   // Virtual-model results are the same for every customer, so they are cached on disk.
   // Customer photos are never written to disk.
-  const cacheKey = mode === 'virtual' ? hash(person.buf, prompt, CFG.model, CFG.quality, CFG.size) : null;
+  const cacheKey = mode === 'virtual' ? hash(person.buf, prompt, ENGINE_ID) : null;
   const cached = v => cacheKey && path.join(DATA, 'cache', `${cacheKey}-${v}.png`);
   const out = {};
   if (cacheKey && views.every(v => fs.existsSync(cached(v)))) {
@@ -140,11 +211,11 @@ async function tryOn(body) {
     return { prompt, images: views.map(v => toDataUrl(out[v])), cached: true };
   }
   const front = cacheKey && fs.existsSync(cached('front')) ? fs.readFileSync(cached('front'))
-    : await openaiImage('edits', prompt, [person, ...items.map(p => readImage(p.img))]);
+    : await generateImage(prompt, [person, ...items.map(p => readImage(p.img))]);
   if (cacheKey) fs.writeFileSync(cached('front'), front);
   out.front = front;
   if (views.includes('side')) {
-    out.side = await openaiImage('edits', P.sideViewPrompt(), [{ buf: front, type: 'image/png', name: 'front.png' }]);
+    out.side = await generateImage(P.sideViewPrompt(), [{ buf: front, type: sniffType(front), name: 'front.png' }]);
     if (cacheKey) fs.writeFileSync(cached('side'), out.side);
   }
   return { prompt, images: views.map(v => toDataUrl(out[v])), cached: false };
@@ -157,7 +228,7 @@ async function generateModels(onlyId) {
     const file = path.join(DATA, 'models', m.id + '.png');
     if (m.img && !onlyId) { console.log(`- ${m.id}: موجود`); continue; }
     console.log(`- ${m.id}: جاري التوليد...`);
-    fs.writeFileSync(file, await openaiImage('generations', P.modelPrompt(m)));
+    fs.writeFileSync(file, await generateImage(P.modelPrompt(m)));
     console.log(`  تم: ${path.relative(ROOT, file)}`);
   }
 }
@@ -219,7 +290,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const ip = req.socket.remoteAddress;
   try {
-    if (url.pathname === '/api/health') return send(res, 200, { ok: true, live: LIVE, model: LIVE ? CFG.model : null });
+    if (url.pathname === '/api/health') return send(res, 200, { ok: true, live: LIVE, provider: LIVE ? CFG.provider : null, model: LIVE ? ENGINE.model : null });
     if (url.pathname === '/api/catalog') return send(res, 200, catalog());
     if (url.pathname === '/api/tryon' && req.method === 'POST') {
       rateLimit(ip);
@@ -252,6 +323,6 @@ if (process.argv.includes('--generate-models')) {
 } else {
   server.listen(CFG.port, () => {
     console.log(`غرفة القياس شغالة على http://localhost:${CFG.port}`);
-    console.log(LIVE ? `التوليد الحي مفعّل (${CFG.model}, ${CFG.quality}, ${CFG.size})` : 'وضع العرض: أضف OPENAI_API_KEY في ملف .env لتفعيل التوليد');
+    console.log(LIVE ? `التوليد الحي مفعّل: ${ENGINE_ID}` : 'وضع العرض: أضف GEMINI_API_KEY في ملف .env لتفعيل التوليد');
   });
 }
